@@ -1,0 +1,30 @@
+# LaTeX build artifacts
+*.aux
+*.log
+*.toc
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.nav
+*.snm
+*.vrb
+*.lof
+*.lot
+*.idx
+*.ilg
+*.ind
+*.lol
+
+# Minted cache
+_minted/
+
+# VS Code
+.vscode/
+
+# PDF output (rimuovi questa riga se vuoi versionare il PDF)
+# *.pdf

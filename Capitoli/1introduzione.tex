@@ -1,0 +1,193 @@
+\section{Introduzione}
+\subsection{Applicazioni client-server}
+Le applicazioni Internet si basano su un’architettura client-server, cioè sono composte da due parti software logicamente distinte:
+\begin{itemize}
+    \item \textbf{Lato server}: fornisce il servizio
+    \item \textbf{Lato client}: richiede il servizio
+\end{itemize}
+Un server può gestire più client contemporaneamente. L'utente, invece, accede al servizio attraverso un user agent, ovvero un software 
+che unisce il client con l’interfaccia grafica usata dalla persona.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/client_server.png}
+\end{figure}
+
+Il funzionamento delle applicazioni client-server è il seguente:
+\begin{itemize}
+    \item Il server è collegato ad internet e attende le richieste dei client.
+    \item Il client si collega ad internet per richiedere un servizio al server.
+    \item La comunicazione avviene grazie a un protocollo applicativo, cioè un insieme di regole di scambio dei messaggi.
+    \item L’utente interagisce tramite un user agent, che rappresenta l’interfaccia grafica e la parte client dell’applicazione.
+\end{itemize}
+
+Ogni applicazione client-server si basa su un protocollo, cioè un insieme di regole che stabiliscono come client e server devono comunicare, 
+va progettato con precisione fin dall’inizio, perché rappresenta la base di tutto il funzionamento dell’applicazione.
+\newline
+È importante chiarire alcuni concetti fondamentali:
+\begin{itemize}
+    \item Client e server non sono macchine, ma programmi. Lo stesso computer può eseguire sia un client che un server.
+    \item I server di solito stanno su computer più potenti, perché devono gestire tante richieste contemporaneamente.
+    \item I client invece possono essere leggeri e funzionare su molti tipi di dispositivi, dai PC agli smartphone.
+    \item Nulla vieta che un computer faccia da server e allo stesso tempo ospiti anche uno o più client della stessa applicazione.
+\end{itemize}
+
+\subsection{Layer Stack}
+Internet funziona a strati (stack di protocolli). Le applicazioni (come posta, web, ecc.) non comunicano direttamente con la rete fisica, ma si 
+appoggiano al livello di trasporto (es. TCP o UDP).
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/pila_protocollare.png}
+\end{figure}
+
+\subsubsection{Transport Layer}
+Per permettere la comunicazione tra programmi, il livello di trasporto usa le porte:
+\begin{itemize}
+    \item Ogni programma (client o server) che comunica in rete deve “aprire” una porta numerata.
+    \item L’indirizzo IP identifica il computer, mentre la porta identifica il programma che gira su quel computer.
+    \item I server hanno porte fisse, su cui restano in ascolto (per esempio, il web server usa la porta 80 per HTTP).
+    \item I client di solito usano porte temporanee, assegnate automaticamente dal sistema.
+    \item Le porte da 0 a 1023 sono già riservate ad applicazioni ben note (HTTP, FTP, SMTP, ecc.).
+\end{itemize}
+
+Le applicazioni in internet possono scegliere tra due protocolli di trasporto:
+\begin{itemize}
+    \item \textbf{TCP (Transmission Control Protocol)}: protocollo con connessione avanzata, è come una telefonata.
+            Prima ci si accorda (handshake), poi si parla in modo ordinato e sicuro. Assicura che i dati arrivino corretti e nell’ordine giusto.
+    \item \textbf{UDP (User Datagram Protocol)}: protocollo senza connessione, è come spedire una lettera senza raccomandata.
+            Non c’è garanzia che arrivi, né che arrivi in ordine. È più veloce e leggero, usato per applicazioni in tempo reale (es.\ videochiamate, giochi online).
+\end{itemize}
+
+Vediamo ora un esempio di comunicazione TCP.\
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/TCP_1.png}
+\end{figure}
+\newline
+Il server rimane in ascolto su una porta, ad esempio la 80 per HTTP, pronto a ricevere richieste dai client.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/TCP_2.png}
+\end{figure}
+Il client invia una richiesta di connessione al server, specificando l’indirizzo IP del server e la porta su cui è in ascolto. Il server accetta la connessione
+e stabilisce un canale di comunicazione dedicato con quel client.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/TCP_3.png}
+\end{figure}
+
+Da questo momento, server e client comunicano attraverso questo canale, mentre il server rimane libero di ascoltare nuove richieste da altri client.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/TCP_4.png}
+\end{figure}
+
+\newpage
+\subsection{Socket}
+Un \textbf{socket} è come una porta virtuale che permette al client e al server di collegarsi al livello di trasporto.
+\begin{itemize}
+    \item Ogni socket è associato a una porta.
+    \item Client e server creano un canale di comunicazione virtuale attraverso internet.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/socket.png}
+\end{figure}
+
+Un socket è implementato come una struttura dati e memorizza, tra le altre, queste informazioni:
+\begin{itemize}
+    \item \textbf{Tipo di socket}: \begin{itemize}
+        \item \textbf{Stream socket}: usato con TCP, garantisce una comunicazione affidabile e ordinata.
+        \item \textbf{Datagram socket}: usato con UDP, è più veloce ma non garantisce l’ordine né l’affidabilità.
+    \end{itemize}
+    \item \textbf{Indirizzo locale}: IP dell'host + porta del processo locale.
+    \item \textbf{Indirizzo remoto}: IP dell'altro host + porta del processo remoto.
+\end{itemize}
+
+\newpage
+Vediamo ora come funzionano i socket e in che modo client e server comunicano tra loro.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/s_1.png}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/s_2.png}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/s_3.png}
+\end{figure}
+
+\newpage
+
+Con TCP, il server ha una porta specifica (porta applicativa) su cui rimane in ascolto. Quando un client vuole connettersi, invia una richiesta a quella porta.
+Quando arriva la richiesta di un client, il server crea un nuovo socket attivo dedicato a quella connessione. In questo modo, la comunicazione con quel client 
+non blocca l’ascolto di nuove richieste.\newline
+Un server può avere quindi:
+\begin{itemize}
+    \item un socket passivo, per ascoltare le richieste in arrivo.
+    \item più socket attivi, uno per ogni connessione stabilita con un client.
+\end{itemize}
+
+
+Il server ascolta su un socket passivo, collegato a una porta applicativa nota. Per ogni nuovo client, il server apre un socket attivo dedicato, ovviamente se due 
+client girano sulla stessa macchina, useranno porte diverse.
+\newline
+Una connessione TCP è identificata in modo univoco da 4 elementi:
+\texttt{<IP server, porta server, IP client, porta client>}
+
+\subsection{Elementi chiave nella progettazione client-server}
+Per progettare un’applicazione client-server su Internet bisogna fare alcune scelte fondamentali:
+\begin{itemize}
+    \item \textbf{Definire il servizio}: spiegare bene che cosa fa l’applicazione (es.\ inviare email, trasferire file, ecc.).
+    \item \textbf{Definire il protocollo}: stabilire con precisione le regole di comunicazione tra client e server.
+    \item \textbf{Scegliere il trasporto}: decidere se usare TCP (affidabile, ordinato) o UDP (veloce, non garantito).
+    \item \textbf{Scegliere la porta}: scegliere su quale porta il server resterà in ascolto per accettare le connessioni.
+\end{itemize}
+
+Quando un server usa TCP, può essere progettato in due modi diversi:
+\begin{itemize}
+    \item \textbf{Modello sincrono}: ogni richiesta viene servita in modo sequenziale o con un thread dedicato -$>$ più facile da programmare, ma può richiedere molte risorse.
+    \item \textbf{Modello asincrono}: il server usa un unico thread per gestire più connessioni contemporaneamente -$>$ più complesso, ma più efficiente in termini di risorse.
+\end{itemize}
+Per capire meglio la differenza, si usa spesso la metafora del ristorante, dove i clienti rappresentano i client e i camerieri rappresentano il server.\newline
+Per spiegare i due modelli di server TCP (sincrono e asincrono) possiamo immaginare un ristorante:
+\begin{flushleft}
+    \textbf{Il servizio}
+    \begin{itemize}
+        \item Quando un cliente arriva, il cameriere lo accoglie, prende l’ordine, lo porta in cucina, e poi serve il piatto.
+        \item Alcune operazioni (come aspettare che la cucina prepari il piatto) possono bloccare il cameriere.
+    \end{itemize}
+\end{flushleft}
+
+\begin{enumerate}
+    \item \textbf{Modello sincrono}\begin{itemize}
+        \item Ogni cliente ha un cameriere dedicato.
+        \item Se un cameriere aspetta l’ordine dalla cucina, gli altri continuano a servire i loro clienti.
+        \item È semplice da gestire, ma servono tante risorse (molti camerieri = molti thread).
+    \end{itemize}
+    \item \textbf{Modello asincrono}\begin{itemize}
+        \item Tutti i clienti vengono serviti da un unico cameriere.
+        \item Se il cameriere rimanesse fermo in attesa della cucina, bloccherebbe tutti gli altri clienti.
+        \item Per evitare questo, il cameriere lavora in modo non bloccante: prende gli ordini, li lascia in cucina, passa ad altri clienti e torna solo quando i piatti sono pronti.
+        \item Il cameriere usa una coda di eventi per gestire più clienti contemporaneamente.
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Sincrono vs Asincrono}
+\begin{itemize}
+    \item Il modello sincrono è più semplice da programmare, ma se i client aumentano richiede tanti thread → quindi può diventare poco scalabile.
+    \item Il modello asincrono è più difficile da programmare, ma è altamente scalabile → spesso basta un solo thread per gestire tutti i client.
+\end{itemize}
+
+Alcuni sistemi combinano i due approcci:
+\begin{itemize}
+    \item \textbf{Thread pool} → un numero limitato di thread che gestiscono i client.
+    \item \textbf{Gestione asincrona delle operazioni bloccanti} → ogni thread può delegare i compiti che rischiano di bloccarlo.
+\end{itemize}
+Una novità è rappresentata dai \textbf{virtual threads} di Java, che offrono la semplicità della programmazione sincrona con la scalabilità tipica delle architetture asincrone.

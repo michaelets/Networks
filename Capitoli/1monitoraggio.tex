@@ -1,0 +1,68 @@
+\section{Monitoraggio del traffico di rete}
+
+La raccolta di dati da fonti eterogenee è oggi un'operazione relativamente semplice;
+la vera sfida risiede nell'interpretare ciò che viene raccolto, in particolare
+nel dominio della sicurezza informatica, dove le minacce reali rappresentano
+eventi statisticamente rari in un flusso di traffico altrimenti monotono.
+
+Poiché la stragrande maggioranza del traffico è benigna e gli attacchi più pericolosi
+sono rari e difficili da distinguere dal rumore di fondo, è necessario un framework
+strutturato che integri raccolta, archiviazione e analisi in un sistema coeso.
+
+\subsection{Architettura generale di un framework di analisi di rete}
+
+Un framework di analisi di rete ha lo scopo di integrare dati provenienti da fonti eterogenee
+per fornire una visione completa e contestualizzata degli eventi che si verificano
+all'interno di un'infrastruttura.
+Esso orchestra il flusso di informazioni dai sensori di rete fino alla console dell'analista,
+abilitando sia analisi in tempo reale che indagini storiche approfondite.
+
+L'architettura generale di tale framework si basa su diversi componenti interconnessi:
+
+\begin{itemize}
+    \item \textbf{Sensor Network} (rete di sensori): è il punto di partenza,
+    responsabile della raccolta dei dati grezzi della rete, degli host e dei servizi.
+
+    \item I dati possono essere inviati a un sistema di \textit{realtime processing}
+    (elaborazione in tempo reale) per analisi immediate,
+    come il rilevamento di frame anomali o la generazione di log.
+
+    \item Contemporaneamente, i dati confluiscono nel \textbf{repository},
+    il cuore del sistema di archiviazione, che a sua volta si suddivide in:
+
+    \begin{itemize}
+        \item \textbf{Archive}: deposito per i dati degli eventi.
+        \item \textbf{Annotation}: contenitore per i dati di arricchimento.
+        \item \textbf{Knowledge Base} (KB): base di conoscenza specifica dell'organizzazione.
+    \end{itemize}
+
+    \item Il sistema di \textbf{Query Processing} (elaborazione delle interrogazioni)
+    attinge al repository per permettere agli analisti di effettuare ricerche complesse
+    e sintetizzare le informazioni.
+
+    \item Infine, la \textbf{console} funge da interfaccia di interazione utente,
+    permettendo di visualizzare i risultati delle analisi in tempo reale e delle interrogazioni,
+    e di interagire con il sistema.
+
+\end{itemize}
+
+\subsubsection{Archive}
+
+L'archive è il deposito dedicato ai dati degli eventi.
+Questi possono includere una vasta gamma di informazioni, come:
+
+\begin{itemize}
+    \item \textbf{Dati di traffico di rete}: log di NetFlow, catture complete dei pacchetti (pcap).
+    \item \textbf{Informazioni di sistema}: statistiche sui processi, sull'utilizzo del file system,
+    report di antivirus.
+    \item \textbf{Log di sistema}: log dei server web, informazioni di syslog.
+\end{itemize}
+
+Una caratteristica chiave dell'archive è che i suoi dati sono \textbf{immutabili}:
+una volta scritti, non vengono aggiornati.
+Questo lo rende l'ambiente ideale per eseguire analisi forensi e storiche,
+garantendo la coerenza e l'integrità delle evidenze.
+Per ottimizzare lo spazio, per i dati più datati è spesso conveniente conservare
+solo i risultati post-elaborazione, anziché i dati grezzi completi.
+
+\subsubsection{Annotation}
