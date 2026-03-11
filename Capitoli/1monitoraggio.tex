@@ -132,7 +132,7 @@ per ridurre il carico sul sistema di query e fornire alert immediati.
 Questo framework completo dipende interamente dalla qualità e dalla copertura
 dei dati forniti dal suo componente di input prioritario: la rete di sensori.
 
-\section{La rete di sensori (Sensor Network)}
+\subsection{La rete di sensori (Sensor Network)}
 
 La rete di sensori è il fondamento di qualsiasi sistema di monitoraggio.
 È l'insieme di tutti i dispositivi di raccolta dati responsabili
@@ -180,7 +180,7 @@ emerge la complessità di gestire dati eterogenei. Per affrontare
 questo problema è utile un modello di classificazione che aiuti
 a categorizzare i sensori in base a posizione, dominio e azione.
 
-\subsection{Classificazione dei sensori: un modello a tre attributi}
+\subsubsection{Classificazione dei sensori: un modello a tre attributi}
 
 Per gestire la complessità derivante dall'impiego di sensori eterogenei,
 è utile un sistema di classificazione basato su tre attributi chiave:
@@ -205,7 +205,7 @@ Per validità si intende la robustezza degli argomenti basati sui dati,
 ovvero la certezza che le conclusioni derivino logicamente dalle premesse
 e siano supportate dalle evidenze raccolte.
 
-\subsection{Analisi del dominio (Domain)}
+\subsubsection{Analisi del dominio (Domain)}
 
 Il dominio descrive il tipo di informazioni che un sensore è in grado
 di fornire. Sensori posizionati nello stesso punto, ma appartenenti
@@ -236,7 +236,7 @@ non è continuo ma dipende dall'iniziativa dell'analista. L'identità
 è legata all'indirizzo IP e a identificatori di servizio.
 \end{itemize}
 
-\subsection{Analisi per posizione (Vantage)}
+\subsubsection{Analisi per posizione (Vantage)}
 
 Il vantage (posizione) di un sensore descrive quali pacchetti è in grado
 di osservare in un punto specifico della topologia di rete
@@ -259,7 +259,7 @@ che garantisca il monitoraggio desiderato con una ridondanza minima.
 La ridondanza può essere ulteriormente limitata tramite l'applicazione
 di regole di filtraggio.
 
-\subsubsection{Vantage a livello Data Link}
+\paragraph{Vantage a livello Data Link}
 
 A livello di data link (L2), la visibilità dipende dalla tecnologia di rete.
 
@@ -276,7 +276,7 @@ di una o più porte verso una porta a cui è collegato il sensore.
 Un'alternativa hardware sono i \textit{physical tap}.
 \end{itemize}
 
-\subsubsection{Vantage a livello IP}
+\paragraph{Vantage a livello IP}
 
 A livello IP (L3), emergono ulteriori complessità che possono compromettere
 la validità dell'analisi.
@@ -315,7 +315,7 @@ Questo dimostra che, senza accesso diretto ai log dei middlebox, qualsiasi
 analisi di traffico osservato esternamente è intrinsecamente incompleta
 e potenzialmente fuorviante.
 
-\subsection{Analisi per azione (Action)}
+\subsubsection{Analisi per azione (Action)}
 
 L'azione di un sensore descrive come esso interagisce con i dati che raccoglie.
 Esistono tre tipi principali di azione:
@@ -343,7 +343,7 @@ Event (E) e Control (C) non producono alert. In presenza di un attacco, R
 si limita a registrarlo, E genera un avviso (``We're attacked!''), e C blocca
 attivamente il traffico malevolo impedendogli di raggiungere la destinazione.
 
-\section{Formati dei dati e protocolli di monitoraggio}
+\subsection{Formati dei dati e protocolli di monitoraggio}
 
 Nel monitoraggio di rete vengono utilizzati diversi formati di dati, ciascuno
 con i propri punti di forza. I principali includono:
@@ -356,7 +356,7 @@ monitoraggio delle performance.
 tra dettaglio e volume di dati.
 \end{itemize}
 
-\subsection{NetFlow}
+\subsubsection{NetFlow}
 
 NetFlow è contemporaneamente un protocollo di comunicazione, un formato dati
 e un'applicazione, originariamente sviluppata da Cisco, utilizzata per raccogliere
@@ -407,7 +407,7 @@ preconfigurato (per evitare che flussi molto lunghi non vengano mai esportati).
 fine della connessione (FIN o RST).
 \end{enumerate}
 
-\subsubsection{Dettagli su NetFlow v5}
+\paragraph{Dettagli su NetFlow v5}
 
 Nella versione 5 di NetFlow, il record del flusso viene incapsulato in un
 datagramma UDP e inviato al collector. Un tipico record v5 include metadati
@@ -432,7 +432,7 @@ interfacce di input/output, Autonomous System sorgente e destinazione
 (\texttt{src-as}, \texttt{dst-as}) e relative maschere di rete.
 \end{itemize}
 
-\subsubsection{Evoluzione di NetFlow}
+\paragraph{Evoluzione di NetFlow}
 
 NetFlow v5 è oggi uno standard obsoleto, principalmente perché limitato a IPv4.
 L'evoluzione ha portato a \textbf{NetFlow v9}, uno standard flessibile basato
@@ -441,7 +441,7 @@ nei record. La standardizzazione IETF di questo approccio è nota come
 \textbf{IPFIX} (o NetFlow v10), che include pieno supporto a IPv6 e campi
 specifici per il monitoraggio di ambienti con NAT.
 
-\subsubsection{Problematiche di generazione NetFlow}
+\paragraph{Problematiche di generazione NetFlow}
 
 La generazione di record NetFlow può avvenire in due modi:
 
@@ -461,7 +461,7 @@ risorse all'analisi e produrre un output NetFlow più ricco, potenzialmente
 integrando anche informazioni derivanti da deep packet inspection.
 \end{itemize}
 
-\subsection{sFlow}
+\subsubsection{sFlow}
 
 sFlow (\textit{sampled Flow}) è uno standard industriale alternativo,
 originariamente sviluppato da InMon Corp, per l'esportazione di record a
@@ -494,7 +494,7 @@ meglio in ambienti ad altissimo traffico e ha un impatto quasi nullo sulle
 performance del dispositivo, ma la sua natura campionata implica che può
 perdere dettagli importanti o non rilevare flussi di breve durata.
 
-\subsection{Confronto e limiti dei metodi tradizionali}
+\subsubsection{Confronto e limiti dei metodi tradizionali}
 
 In sintesi, sia NetFlow che sFlow presentano dei limiti.
 NetFlow richiede significative risorse di calcolo sul dispositivo di rete e,
@@ -509,7 +509,7 @@ Queste limitazioni, unite all'avvento di nuove architetture di rete come SDN
 (Software-Defined Networking), hanno spinto la comunità a sviluppare tecniche
 di monitoraggio più evolute, aprendo la strada al concetto di telemetria di rete.
 
-\section{Tecniche di monitoraggio evolute: In-Band Network Telemetry (INT)}
+\subsection{Tecniche di monitoraggio evolute: In-Band Network Telemetry (INT)}
 
 In-Band Network Telemetry (INT) rappresenta una soluzione moderna ai limiti
 dei metodi tradizionali, resa possibile dall'avvento dei data plane programmabili.
@@ -541,7 +541,7 @@ hop, occupazione delle code, stato di congestione), rispondendo a domande crucia
 come: quale percorso esatto ha seguito il pacchetto? Quali nodi di forwarding
 ha incontrato? Con chi ha condiviso le code di attesa?
 
-\subsection{Modalità operative di INT}
+\subsubsection{Modalità operative di INT}
 
 Esistono tre principali modalità operative per l'implementazione di INT:
 
@@ -562,7 +562,7 @@ accumulati, li esporta in un unico report completo al monitor e infine rimuove
 l'intero header INT.
 \end{itemize}
 
-\subsection{Sfide e svantaggi di INT}
+\subsubsection{Sfide e svantaggi di INT}
 
 Nonostante i suoi potenti vantaggi, INT introduce diverse sfide:
 
@@ -587,7 +587,7 @@ diventare molto grande, essendo proporzionale al numero di hop nel percorso.
 La fattibilità di tecniche come INT dipende direttamente dalle tecnologie
 sottostanti che abilitano la programmabilità del data plane.
 
-\section{Tecnologie abilitanti per il data plane programmabile}
+\subsection{Tecnologie abilitanti per il data plane programmabile}
 
 La telemetria avanzata come INT è resa possibile da un'evoluzione fondamentale
 nelle architetture di rete: il passaggio da dispositivi a funzione fissa a
@@ -603,7 +603,7 @@ kernel Linux.
 Open vSwitch (OVS).
 \end{itemize}
 
-\subsection{P4 (Programming Protocol-Independent Packet Processors)}
+\subsubsection{P4 (Programming Protocol-Independent Packet Processors)}
 
 P4 è un linguaggio di dominio specifico progettato per i dispositivi di rete,
 che permette di definire in modo esplicito e flessibile come i dispositivi
@@ -632,7 +632,7 @@ prima della trasmissione.
 l'invio sul link fisico.
 \end{enumerate}
 
-\subsection{eBPF (extended Berkeley Packet Filter)}
+\subsubsection{eBPF (extended Berkeley Packet Filter)}
 
 Un'altra tecnologia chiave per la programmabilità, specifica per il kernel
 Linux, è \textbf{eBPF}. eBPF consente di eseguire programmi personalizzati
