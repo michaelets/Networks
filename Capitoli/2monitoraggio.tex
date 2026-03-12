@@ -24,10 +24,10 @@ L'architettura generale di tale framework si basa su diversi componenti intercon
 \begin{itemize}
 \item \textbf{Sensor Network} (rete di sensori): è il punto di partenza,
 responsabile della raccolta dei dati grezzi della rete, degli host e dei servizi.
-\item I dati possono essere inviati a un sistema di \textit{realtime processing}
+\item I dati possono essere inviati a un sistema di \textbf{Real-time Processing}
 (elaborazione in tempo reale) per analisi immediate,
 come il rilevamento di frame anomali o la generazione di log.
-\item Contemporaneamente, i dati confluiscono nel \textbf{repository},
+\item Contemporaneamente, i dati confluiscono nel \textbf{Repository},
 il cuore del sistema di archiviazione, che a sua volta si suddivide in:
 \begin{itemize}
 \item \textbf{Archive}: deposito per i dati degli eventi.
@@ -37,10 +37,31 @@ il cuore del sistema di archiviazione, che a sua volta si suddivide in:
 \item Il sistema di \textbf{Query Processing} (elaborazione delle interrogazioni)
 attinge al repository per permettere agli analisti di effettuare ricerche complesse
 e sintetizzare le informazioni.
-\item Infine, la \textbf{console} funge da interfaccia di interazione utente,
+\item Infine, la \textbf{Console} funge da interfaccia di interazione utente,
 permettendo di visualizzare i risultati delle analisi in tempo reale e delle interrogazioni,
 e di interagire con il sistema.
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/frameworkAnalisi.png}
+\end{figure}
+
+\paragraph{Repository}
+
+Il repository è il componente di archiviazione per tutti i dati che non vengono elaborati in streaming.
+La sua progettazione deve rispondere a tre questioni fondamentali:
+
+\begin{enumerate}
+\item \textbf{Orizzonte Temporale}: Quanto a lungo conservare i dati? ne dipende un impatto sui costi 
+e sulle capacità di storage necessarie.
+\item \textbf{Strategie di Accesso}: Come differenziare l'accesso ai dati recenti e vecchi? Tipicamente 
+si usano storage ad alte prestazioni per dati recenti, mentre quelli vecchi vengono spostati
+in supporti meno performanti a basso costo.
+\item \textbf{Aggiornamento delle Stime}: Con quale frequenza rivedere le stime di archiviazione? Il volume 
+del traffico di rete è in costante cresciata, necessitando un riesame periodico delle encessità di storage
+per evitare saturazioni.
+\end{enumerate}
 
 \paragraph{Archive}
 
@@ -83,8 +104,8 @@ Contiene dati pertinenti esclusivamente all'ambiente target, come:
 
 \begin{itemize}
 \item Inventari degli asset di rete e dei sistemi.
-\item Dati relativi al personale (esempio: ruoli, responsabilità).
-\item Calendari interni (esempio: di manutenzione).
+\item Dati relativi al personale (es: ruoli, responsabilità).
+\item Calendari interni (es: di manutenzione).
 \end{itemize}
 
 I dati della KB sono tipicamente non strutturati, di dimensioni relativamente ridotte,
@@ -268,12 +289,24 @@ A livello di data link (L2), la visibilità dipende dalla tecnologia di rete.
 a B, tutti gli host sullo stesso segmento (C e D) vedono il pacchetto.
 Tuttavia solo il destinatario B lo elabora. Un sensore (ad esempio D)
 può registrare tutto il traffico.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/vantageLink.png}
+\end{figure}
+
 \item \textbf{Su uno switch}: gli switch inoltrano il traffico solo sulla
 porta del destinatario. Se A invia un pacchetto a B, gli host C e D
 non vedono nulla. Per monitorare il traffico, è necessario configurare
 una \textit{porta speculare} (mirrored port), che copia tutto il traffico
 di una o più porte verso una porta a cui è collegato il sensore.
 Un'alternativa hardware sono i \textit{physical tap}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/vantageSwitch.png}
+\end{figure}
+
 \end{itemize}
 
 \paragraph{Vantage a livello IP}
@@ -288,6 +321,12 @@ rendendo difficile l'analisi dello stato della connessione.
 \item \textbf{Valori TTL (Time-to-Live)}: il TTL di un pacchetto diminuisce ad
 ogni hop. Un pacchetto con TTL troppo basso viene scartato prima di raggiungere
 un certo sensore, che quindi non lo vedrà mai.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/vantageTTL.png}
+\end{figure}
+
 \item \textbf{Middlebox}: dispositivi intermedi come NAT, proxy e firewall
 alterano l'indirizzo IP sorgente (SIP) e la porta sorgente (Sport) dei pacchetti.
 Senza accedere ai log del middlebox, è impossibile correlare il traffico esterno
