@@ -1,3 +1,5 @@
+% !TeX root = ../main.tex
+
 \section{Monitoraggio del traffico di rete}
 
 \subsection{Introduzione al monitoraggio di rete}
@@ -175,7 +177,7 @@ centralizzati di log (syslog).
 \end{itemize}
 
 È importante distinguere questa raccolta passiva dal sensing attivo,
-che viene eseguito su base ad hoc con strumenti come ping, traceroute
+che viene eseguito con strumenti come ping, traceroute
 o Nmap per mappare la rete o verificare la connettività,
 e non è parte integrante della rete di sensori permanente.
 
@@ -197,9 +199,7 @@ devono essere verificati costantemente.
 \end{enumerate}
 
 Dalla necessità di utilizzare sensori multipli e di diverso tipo,
-emerge la complessità di gestire dati eterogenei. Per affrontare
-questo problema è utile un modello di classificazione che aiuti
-a categorizzare i sensori in base a posizione, dominio e azione.
+emerge la complessità di gestire dati eterogenei.
 
 \subsubsection{Classificazione dei sensori: un modello a tre attributi}
 
@@ -274,11 +274,9 @@ La selezione dei punti di osservazione ottimali segue un processo in tre fasi:
 punto cosa è possibile vedere (traffico a livello L2, IP, L4
 o applicativo).
 \item Determinare la copertura ottimale, scegliendo un insieme di punti
-che garantisca il monitoraggio desiderato con una ridondanza minima.
+che garantisca il monitoraggio desiderato con una ridondanza minima, che può essere 
+limitata ulteriormente con regole di filtraggio.
 \end{enumerate}
-
-La ridondanza può essere ulteriormente limitata tramite l'applicazione
-di regole di filtraggio.
 
 \paragraph{Vantage a livello Data Link}
 
@@ -345,14 +343,14 @@ l'ispezione del payload.
 \end{itemize}
 \end{itemize}
 
-Dispositivi diversi introducono sfide differenti: un NAT introduce problemi di
-Identity, Aggregation e Consistency; un DHCP server impatta su Identity e
-Consistency; un load balancer può alterare Causality e Consistency; un proxy
-introduce le stesse sfide del NAT più Causality; una VPN introduce Identity,
-Aggregation, Consistency ed Encryption.
-Questo dimostra che, senza accesso diretto ai log dei middlebox, qualsiasi
-analisi di traffico osservato esternamente è intrinsecamente incompleta
-e potenzialmente fuorviante.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/middlebox.png}
+\end{figure}
+
+Dispositivi diversi introducono sfide differenti, questo dimostra che, senza accesso 
+diretto ai log dei middlebox, qualsiasi analisi di traffico osservato esternamente 
+è intrinsecamente incompleta e potenzialmente fuorviante.
 
 \subsubsection{Analisi per azione (Action)}
 
@@ -363,12 +361,12 @@ Esistono tre tipi principali di azione:
 \item \textbf{Report}: un sensore di tipo \textit{report} fornisce semplicemente
 informazioni su tutti i fenomeni che osserva. È fondamentale per stabilire una
 baseline del comportamento normale della rete e per sviluppare nuove fonti di
-rilevamento degli attacchi. Esempi includono collettori NetFlow, tcpdump e
+rilevamento degli attacchi. Esempi sono collettori NetFlow, tcpdump e
 log dei server.
 \item \textbf{Event}: un sensore di tipo \textit{event} analizza una o più
 fonti di dati per produrre un evento che sintetizza le statistiche rilevate.
 A differenza del sensore di report, non mostra tutto ma solo ciò che ritiene
-significativo. Esempi includono gli Intrusion Detection Systems (IDS) e gli
+significativo. Esempi sono gli Intrusion Detection Systems (IDS) e gli
 antivirus, che possono agire come ``scatole nere'' che generano alert in base
 a logiche interne complesse.
 \item \textbf{Control}: un sensore di tipo \textit{control} va oltre la semplice
@@ -599,6 +597,12 @@ le istruzioni e ogni nodo di transito aggiunge i propri metadati direttamente
 al pacchetto, che cresce ad ogni hop. Il nodo sink raccoglie tutti i metadati
 accumulati, li esporta in un unico report completo al monitor e infine rimuove
 l'intero header INT.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/INT.png}
+\end{figure}
+
 \end{itemize}
 
 \subsubsection{Sfide e svantaggi di INT}
