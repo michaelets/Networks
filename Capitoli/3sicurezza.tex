@@ -32,7 +32,7 @@ perdita di sicurezza per ciascuna categoria.
 
 \subsubsection{La triade CIA}
 
-\paragraph{Riservatezza (Confidentiality)}
+\paragraph{1) Riservatezza (Confidentiality)}
 
 Garantisce la presenza di restrizioni autorizzate all'accesso o alla divulgazione
 delle informazioni. Si distingue in:
@@ -43,7 +43,7 @@ proprietarie non siano rese accessibili a individui non autorizzati.
 informazioni possono essere raccolte e a chi possano essere divulgate.
 \end{itemize}
 
-\paragraph{Integrità (Integrity)}
+\paragraph{2) Integrità (Integrity)}
 
 Protegge contro la modifica o la distruzione impropria delle informazioni. Si
 articola in:
@@ -58,7 +58,7 @@ funzioni in modo ineccepibile, privo di manipolazioni deliberate o accidentali
 delle sue componenti logiche o fisiche.
 \end{itemize}
 
-\paragraph{Disponibilità (Availability)}
+\paragraph{3) Disponibilità (Availability)}
 
 Garantisce un accesso tempestivo e affidabile alle informazioni e ai servizi
 per gli utenti autorizzati.
@@ -242,21 +242,32 @@ Nonostante le difese di rete, esistono minacce che colpiscono direttamente
 l'utente finale. La tabella seguente riassume le principali dimensioni di rischio:
 
 \begin{itemize}
-\item \textbf{Integrità}: include la modifica dei dati utente o della memoria
-e l'uso di Trojan horse nel browser. Le conseguenze comprendono la perdita di
-informazioni, la compromissione della macchina e l'amplificazione delle
-vulnerabilità. La contromisura principale è l'uso di checksum crittografici.
-\item \textbf{Riservatezza}: minacce come eavesdropping, furto di dati dal
-server o dal client e analisi della configurazione portano alla perdita di
-informazioni sensibili e al decadimento della privacy. Le contromisure includono
-la crittografia e i web proxy.
-\item \textbf{Denial of Service}: flooding, attacchi DNS e interruzione di
-thread utente causano interruzione dell'attività e degradazione delle prestazioni.
-La rilevazione tramite Intrusion Detection è l'approccio principale, data la
-difficoltà di prevenzione assoluta.
-\item \textbf{Autenticazione}: l'impersonificazione di utenti legittimi e la
-falsificazione di dati portano all'appropriazione di diritti e alla validazione
-di dati falsi. La contromisura è l'uso di tecniche crittografiche di validazione.
+\item \textbf{Integrità}: le minacce principali includono la modifica dei dati
+dell'utente, la modifica della memoria, l'alterazione del traffico di messaggi in
+transito e l'impiego di Trojan horse all'interno del browser. Gli effetti tipici
+sono la perdita di informazioni, la compromissione della macchina e, soprattutto,
+l'esposizione a ulteriori categorie di attacco. In questo contesto, una
+contromisura fondamentale è l'uso di checksum crittografici per rilevare
+alterazioni non autorizzate.
+\item \textbf{Riservatezza}: rientrano in questa categoria l'eavesdropping sulla
+rete, il furto di informazioni dal server o dal client e la raccolta indebita di
+metadati, come la configurazione della rete o l'identità dei client che
+comunicano con un server. Le conseguenze dirette sono la perdita di informazioni
+e la compromissione della privacy. Le difese tipiche sono la cifratura dei dati
+e l'uso di web proxy per limitare l'esposizione delle comunicazioni.
+\item \textbf{Denial of Service}: gli attacchi possono manifestarsi tramite
+terminazione dei thread utente, flooding della macchina con richieste fasulle,
+esaurimento di disco o memoria oppure isolamento del sistema mediante attacchi
+DNS. Le conseguenze sono di natura fortemente operativa: il servizio diventa
+disruptive, l'utente subisce un degrado evidente dell'esperienza d'uso e, nei
+casi peggiori, non riesce pi\`u a svolgere il proprio lavoro. Per loro natura,
+questi attacchi risultano difficili da prevenire in modo assoluto.
+\item \textbf{Autenticazione}: le minacce pi\`u rilevanti sono
+l'impersonificazione di utenti legittimi e la falsificazione dei dati. Tali
+attacchi producono una rappresentazione falsa dell'identit\`a dell'utente e
+inducono il sistema o gli operatori a considerare validhe informazioni che non
+lo sono. La risposta pi\`u efficace consiste nell'adozione di tecniche
+crittografiche per la verifica dell'identit\`a e della validit\`a dei dati.
 \end{itemize}
 
 Una protezione efficace non può prescindere da un approccio olistico che integri

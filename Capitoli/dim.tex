@@ -1,0 +1,457 @@
+\section{Appendice, dimostrazioni}
+
+\subsection{Dimostrazione del Test $\chi^2$ (Goodness-of-Fit)}
+
+\textbf{PRINCIPIO LOGICO:} confrontiamo la \textbf{distribuzione
+osservata} dei dati (ciò che sta accadendo ora nella rete) con
+una \textbf{distribuzione attesa} (un modello teorico di ciò che
+consideriamo ``traffico normale'').
+
+L'idea di base è verificare l'\textbf{Ipotesi Nulla ($H_0$)},
+la quale afferma che ``il sistema si trova in uno stato normale''.
+Se la discrepanza tra ciò che osserviamo e ciò che ci aspettiamo
+è troppo grande, RIFIUTIAMO questa ipotesi e SEGNALIAMO
+UN'ANOMALIA.
+
+Per quantificare la discrepanza, usiamo la statistica del
+$\chi^2$:
+\[
+    \chi^2 = \sum_{i} \frac{(O_i - E_i)^2}{E_i}
+\]
+\begin{itemize}
+    \item varianza osservata rispetto all'attesa
+    \item vogliamo valori positivi, non importa se il valore
+          osservato è sopra o sotto quello atteso
+    \item NORMALIZZAZIONE
+\end{itemize}
+
+\subsubsection{Esempio Pratico: Analisi delle Porte TCP}
+
+Relativo al conteggio dei tentativi di connessione sulle varie
+porte TCP in un istante $T$.
+
+\textbf{K categorie:}
+\begin{itemize}
+    \item Porta 22 (SSH)
+    \item Porta 80 (HTTP)
+    \item Porta 443 (HTTPS)
+    \item Porta 53 (DNS)
+    \item Porta 3306 (MySQL)
+    \item Porta 8080 (Admin)
+    \item Altre porte (Other)
+\end{itemize}
+
+Abbiamo 7 categorie $\rightarrow$ \textbf{6 gradi di libertà
+($d = k - 1$)}.
+
+\textbf{Fasi:}
+\begin{enumerate}
+    \item \textbf{Stima del modello ($E_i$):} per ogni categoria,
+    stimiamo quanti pacchetti ci aspettiamo in condizioni normali.
+    Spesso, trattandosi di conteggi/arrivi nel tempo, si modellano
+    i dati come variabili aleatorie di \textbf{Poisson} che, per
+    grandi numeri, tendono a distribuzioni \textbf{Gaussiane}.
+    Quindi $E_i$ rappresenta la nostra media storica.
+    \[
+        P(X=k) = \frac{\lambda^k e^{-\lambda}}{k!}
+    \]
+    \[
+        E[X] = \sum_{k=0}^{\infty} k \cdot P(k) = \lambda
+    \]
+    \[
+        Var(X) = E[X^2] - (E[X])^2
+               = (\lambda^2 + \lambda) - \lambda^2 = \lambda
+    \]
+    \begin{itemize}
+        \item Media $= N \cdot E_i$
+        \item Varianza $\sigma^2 = E_i$
+        \item Dividere per $E_i$ significa normalizzare l'errore
+              rispetto alla varianza naturale del traffico.
+    \end{itemize}
+
+    \item \textbf{Osservazione ($O_i$):} contiamo effettivamente
+    quanti pacchetti arrivano per ogni porta nell'intervallo
+    corrente.
+
+    \item \textbf{Calcolo del $\chi^2$:} sommiamo le differenze
+    quadratiche normalizzate per tutte le 7 categorie.
+
+    \item \textbf{La decisione: soglia e valori critici.} Una
+    volta ottenuto il valore numerico $\chi^2$, per decidere se
+    è un'anomalia dobbiamo confrontarlo con una
+    \textbf{soglia critica}.
+\end{enumerate}
+
+\textbf{Limitazioni:}
+\begin{itemize}
+    \item Test applicabile solo a dataset monodimensionali.
+    \item Modellare traffico di rete complesso con distribuzioni
+          semplici e note è una sfida notevole. Se i dati non
+          sono realmente ``poissoniani'' il test fallisce.
+\end{itemize}
+
+La \textbf{distribuzione teorica del $\chi^2$} è una funzione
+di densità di probabilità nota, che dipende dai gradi di
+libertà $d$.
+
+Scegliamo un \textbf{livello di significatività $\alpha$}
+(ad es. 0.05 o 0.01) che rappresenta la nostra tolleranza di
+falsi positivi (quante occorrenze legittime siamo disposti a
+classificare erroneamente come anomalie).
+
+Confrontiamo le \textbf{tabelle tabulate} della distribuzione
+$\chi^2$ (in letteratura) incrociando i gradi di libertà e
+$\alpha$ per trovare il valore critico ($\chi^2_{critico}$):
+\begin{itemize}
+    \item Se $\chi^2 > \chi^2_{critico}
+          \rightarrow$ ANOMALIA (rifiuto $H_0$)
+    \item Se $\chi^2 < \chi^2_{critico}
+          \rightarrow$ TRAFFICO NORMALE (accetto $H_0$)
+\end{itemize}
+
+\subsection{Ellipsoid Envelope}
+
+Immagina di osservare un sistema che produce dati con 2
+caratteristiche: il ``traffico di rete in ingresso'' e il
+``carico della CPU''. Se visualizziamo questi dati in un
+grafico cartesiano, vedremo una nuvola di punti. Nella
+maggior parte dei sistemi stabili, questi punti tendono a
+raggrupparsi in una zona centrale densa (comportamento normale),
+mentre le anomalie si trovano lontane, isolate ai margini.
+
+L'obiettivo dell'\textbf{Ellipsoid Envelope} è disegnare un
+confine chiuso attorno a questa nuvola centrale. Dato che
+assumiamo che i dati seguano una distribuzione Gaussiana
+multivariata, la forma geometrica che meglio racchiude la
+maggior parte dei punti è un'ellisse (2D) o un ellissoide
+(3D o più). Tutto ciò che cade dentro questa forma è
+``normale'' (``inlier''), tutto ciò che sta fuori è
+``anomalia'' (``outlier'').
+
+Per disegnare questa ellisse, l'algoritmo deve capire due cose:
+dove si trova il centro della nuvola, quanto è grande e in che
+direzione è orientata. Il centro dell'ellisse è determinato
+dalla \textbf{media ($\mu$)} dei dati. La \textbf{forma e
+l'orientamento} sono determinati dalla \textbf{matrice di
+covarianza ($\Sigma$)}. Questa matrice è fondamentale perché
+definisce non solo quanto i dati sono dispersi (varianza), ma
+anche come le diverse caratteristiche si influenzano a vicenda
+(covarianza). Se le variabili sono correlate l'ellisse non sarà
+dritta, ma ruotata e schiacciata.
+
+$\Sigma$ è complessa, ma attraverso la
+\textbf{decomposizione spettrale} ($\Sigma = \Phi \Lambda
+\Phi^T$), l'algoritmo la scompone in istruzioni geometriche
+semplici:
+\begin{itemize}
+    \item La matrice $\Phi$ contiene gli \textbf{autovettori},
+          che indicano le direzioni degli assi principali
+          dell'ellisse. Ci dicono di quanti gradi dobbiamo
+          ruotare la forma affinché si allinei con la
+          distribuzione dei dati.
+    \item La matrice $\Lambda$ contiene gli \textbf{autovalori},
+          che indicano la lunghezza di questi assi. Un autovalore
+          grande indica che in quella direzione i dati sono molto
+          sparsi, quindi l'ellisse deve essere allungata; un
+          autovalore piccolo indica che i dati sono concentrati,
+          quindi l'ellisse deve essere stretta.
+\end{itemize}
+
+Vediamo $M$ come una matrice di trasformazione: immaginiamo
+una sfera perfetta già standardizzata (media $= 0$ e
+varianza $= 1$). Se applichiamo la trasformazione a questa
+sfera, la ``stiriamo'' e ``ruotiamo'' fino a farla diventare
+l'ellisse che si adatta ai nostri dati reali:
+\[
+    \Sigma = M \cdot M^T
+\]
+
+Per rilevare anomalie, l'algoritmo fa proprio l'inverso.
+Prende un nuovo punto osservato e calcola la
+\textbf{distanza di Mahalanobis} dal centro. Questa non è
+una semplice distanza euclidea, ma una distanza ``pesata''
+che utilizza l'inverso della covarianza ($\Sigma^{-1}$).
+In termini geometrici, calcolare questa distanza equivale
+ad applicare la trasformazione inversa ($M^{-1}$) al punto
+osservato per vedere dove cadrebbe se l'ellisse fosse
+riportata ad una sfera standard. Se il punto cade troppo
+lontano dal centro (oltre una soglia definita dalla statistica
+$\chi^2$ o dal rapporto di contaminazione), viene etichettato
+come ANOMALIA.
+
+\textbf{Limitazioni:} per calcolare correttamente $\mu$ e
+$\Sigma$ in presenza di dati sporchi, l'algoritmo utilizza
+stimatori robusti come \textbf{MCD (Minimum Covariance
+Determinant)}. Questo metodo cerca il sottoinsieme di dati
+più denso e compatto per calcolare l'ellisse, ignorando i
+punti più distanti che potrebbero distorcere la forma.
+La limitazione principale è che funziona bene solo su dati
+``normali'' che hanno effettivamente una forma unimodale
+(una singola bolla gaussiana). Se i dati hanno forme strane
+o multiple, l'ellisse genera molti errori, poiché non si
+adatta bene ai risultati.
+
+\subsection{Tre Metodi/Livelli di Accesso al Modello}
+
+\subsubsection{``Full Model'' (White-Box)}
+
+Ha accesso completo ai pesi e all'architettura della rete
+neurale $\rightarrow$ calcola facilmente il gradiente esatto
+della funzione di costo $J$ rispetto all'input $x$.
+
+\subsubsection{Metodo dei Logits (Prima di Softmax)}
+
+È una variante del caso White-Box, ma suggerisce dove guardare
+per ottenere un gradiente migliore.
+
+\begin{itemize}
+    \item \textbf{Logits ($z_i$):} sono i punteggi grezzi che
+          escono dall'ultimo strato della rete neurale prima di
+          essere convertiti in probabilità percentuali.
+    \item \textbf{Softmax($z_i$):}
+          \[
+              \sigma(z)_i =
+              \frac{e^{z_i}}{\sum_j e^{z_j}}
+          \]
+          Questa formula mostra come i logits vengono
+          trasformati in probabilità.
+\end{itemize}
+
+Usare i logits è meglio della probabilità finale perché:
+\begin{itemize}
+    \item \textbf{Evitano la saturazione:} la funzione Softmax
+          schiaccia i valori verso 0 o 1. Quando un valore è
+          molto vicino a 1, la curva è piatta e il gradiente è
+          quasi zero. I logits non hanno questo limite,
+          fornendo un gradiente più vivo.
+    \item \textbf{Preservano le distanze:} logits differenti
+          possono produrre la stessa probabilità se differiscono
+          per una costante (es. $z_i + C$), informazione che la
+          Softmax cancella. I logits mantengono la ``superficie
+          di separazione grezza'', dando più informazioni
+          all'attaccante.
+\end{itemize}
+
+\subsubsection{Metodo dell'Approssimazione
+            (Differenze Finite)}
+
+Serve quando non possiamo calcolare il gradiente
+(es. Black-box), ma possiamo solo interrogare il modello
+e vedere il risultato (probabilità o loss).
+
+Stima il gradiente ``sondando'' il modello con piccole
+variazioni dell'input. Si utilizza il
+\textbf{metodo delle differenze finite centrate}:
+invece di calcolare la derivata analitica, si calcola la
+pendenza della retta secante tra due punti vicinissimi.
+
+\textbf{Formula A (basata sulla Loss):}
+\[
+    g_i \approx
+    \frac{
+        -\log p_y(x + \delta e_i)
+        + \log p_y(x - \delta e_i)
+    }{2\delta}
+\]
+con loss di cross-entropy $J = -\log(p)$.
+
+\textbf{Cosa significa:} per capire quanto la feature $i$-esima
+influenza l'errore, si prova a:
+\begin{itemize}
+    \item Aggiungere una piccola quantità $\delta$ a quella
+          feature ($x + \delta e_i$)
+    \item Sottrarre la stessa quantità ($x - \delta e_i$)
+    \item Misurare la differenza nelle loss ($-\log p_y$) tra
+          questi due punti
+    \item Dividere per la distanza totale $2\delta$
+\end{itemize}
+
+\textbf{Risultato:} si ottiene un'approssimazione della
+derivata parziale $\frac{\partial J}{\partial x_i}$ senza
+conoscere la rete.
+
+\textbf{Formula B (basata sulla Probabilità):}
+\[
+    \frac{\partial p_y}{\partial x_i}
+    \approx
+    \frac{
+        p_y(x + \delta e_i) - p_y(x - \delta e_i)
+    }{2\delta}
+\]
+con $J = -\log(p)$: se prob. $\uparrow$ $\rightarrow$ errore
+$\downarrow$; se prob. $\downarrow$ $\rightarrow$ errore
+$\uparrow$.
+
+La derivata della probabilità indica fiducia $\rightarrow$
+invertiamo il segno per ottenere l'errore.
+
+\textbf{Formula di collegamento (Chain Rule):}
+\[
+    \frac{\partial J}{\partial x_i}
+    = -\frac{1}{p_y(x)} \cdot
+    \frac{\partial p_y}{\partial x_i}
+\]
+
+Un piccolo cambiamento nell'input consegue un'esplosione
+nell'errore: se $p_y$ è molto basso (modello incerto) allora
+$\frac{1}{p_y}$ è molto alto e amplifica. Questa formula serve
+a convertire il risultato della Formula B (variazione della
+probabilità) nel gradiente della loss necessario per FGSM.
+Ci dice che il gradiente dell'errore è
+\textbf{inversamente proporzionale alla probabilità della
+classe corretta}.
+
+\subsection{sFlow e NetFlow: Stima Statistica del Traffico}
+
+\subsubsection{sFlow}
+
+\[
+    Rate = \frac{N}{n}
+\]
+Osservo $n$ pacchetti di $N$ che passano su un'interfaccia.
+Sia $c$ il numero di pacchetti della classe di interesse,
+$p$ l'incognita (proporzione reale della classe), allora:
+\[
+    N_c = n \cdot p, \qquad \sigma_c^2 = n \cdot p(1-p)
+\]
+
+Per una variabile lineare $y = Kx$:
+\[
+    E[y] = K E[x] = K\bar{x}
+\]
+\[
+    Var(y) = K^2 \, Var(x)
+\]
+
+Posso stimare la proporzione incognita:
+\[
+    \hat{p} = \frac{c}{n}
+    \quad \rightarrow \quad
+    \text{proporzione incognita: quanti della frazione di }
+    N \text{ appartengono alla classe } c.
+\]
+
+\[
+    E[\hat{p}]
+    = E\!\left[\frac{c}{n}\right]
+    = \frac{1}{n} E[c]
+    = \frac{1}{n} \cdot n \cdot p = p
+\]
+
+$\hat{p}$ è uno stimatore ottimo non polarizzato (unbiased).
+
+\[
+    Var(\hat{p})
+    = Var\!\left(\frac{c}{n}\right)
+    = \frac{1}{n^2} Var(c)
+    = \frac{1}{n^2} \cdot n \cdot p(1-p)
+    = \frac{p(1-p)}{n}
+    \approx \frac{\hat{p}(1-\hat{p})}{n-1}
+    \approx \frac{\frac{c}{n}\!\left(1-\frac{c}{n}\right)}{n-1}
+\]
+
+La utilizzo sui dati per sapere quanti pacchetti appartengono
+alla classe $c$:
+\[
+    E[\hat{p}] = p = \frac{c}{n}, \qquad
+    Var(\hat{p}) = \frac{c\!\left(1-\frac{c}{n}\right)}{n(n-1)}
+\]
+
+\subsubsection{NetFlow: Stima di $N_c$ e $B_c$}
+
+NetFlow ci dice $N_c$, $B_c$ osservando $c$ pacchetti (byte
+di flusso, numero di pacchetti appartenenti al flusso $c$
+tra quelli che passano $N$).
+
+\[
+    E[N_c]
+    = E[\hat{p} \cdot N]
+    = N \, E[\hat{p}]
+    = N \cdot \frac{c}{n}
+\]
+Numero medio di pacchetti appartenenti al flusso.
+
+\[
+    Var(N_c)
+    = Var(\hat{p} \cdot N)
+    = N^2 \, Var(\hat{p})
+    = N^2 \,
+      \frac{\frac{c}{n}\!\left(1-\frac{c}{n}\right)}{n-1}
+\]
+
+Posso determinare l'errore di stima per gli intervalli
+di confidenza:
+\[
+    \left[
+        N_c - z\sqrt{Var(N_c)},\;
+        N_c + z\sqrt{Var(N_c)}
+    \right]
+\]
+
+Lo standard error (SE) dipende in forma inversa dal numero
+di campioni secondo la distribuzione Gaussiana. Per un
+livello di confidenza del 95\% si ha $z = 1.96$.
+
+L'errore standard è dell'ordine di $1/\sqrt{c}$:
+\[
+    \epsilon\%
+    = 100 \cdot \frac{se}{N_c}
+    = 100 \cdot 1{,}96 \, \frac{\sqrt{Var(N_c)}}{N_c}
+    = 1{,}96 \sqrt{\frac{1}{c}\!\left(1-\frac{c}{n}\right)}
+    < 1{,}96 \sqrt{\frac{1}{c}}
+\]
+
+con $c \leq n$: tra tutti i pacchetti osservati, al più
+fanno tutti parte della stessa coorte, quindi
+$(1 - \frac{c}{n}) < 1$.
+
+\paragraph{Stima dei Byte $B_c$}
+
+La variabile $B_c$ che avrei contato se avessi osservato
+$N_c$ pacchetti, dove $\beta = b_1 + b_2 + \dots + b_c$ è
+il numero totale di byte dei pacchetti appartenenti alla
+coorte (variabili aleatorie statisticamente indipendenti
+$\rightarrow Cov(\dots, \dots) = 0$):
+
+\[
+    B_c
+    = \beta \cdot \frac{N_c}{c}
+    = \left(\frac{1}{c}\sum_{i=1}^{c} b_i\right) N_c
+    = \bar{b} \cdot N_c
+\]
+
+dove $\bar{b}$ è la media della dimensione dei pacchetti
+appartenenti alla coorte $c$.
+
+Ricordando la covarianza:
+\[
+    Cov(x,y)
+    = E[(x-\bar{x})(y-\bar{y})]
+    = E[xy] - \bar{x}\bar{y}
+\]
+
+e la varianza del prodotto di variabili indipendenti:
+\[
+    Var(x \cdot y)
+    = Var(x)\,Var(y) + Var(x)\,\bar{y}^2
+      + \bar{x}^2\,Var(y)
+\]
+
+La varianza della dimensione dei pacchetti è:
+\[
+    Var(b)
+    = \frac{1}{c-1} \sum_{i=1}^{c} (b_i - \bar{b})^2
+    = \frac{1}{c-1}
+      \left[
+          \sum_{i=1}^{c} b_i^2 - c\bar{b}^2
+      \right]
+    = \frac{1}{c-1}
+      \left[
+          \sum_{i=1}^{c} b_i^2
+          - \frac{1}{c}
+            \left(\sum_{i=1}^{c} b_i\right)^2
+      \right]
+\]
+
+Varianza della dimensione dei pacchetti espressa solo in
+base alla dimensione dei campioni.
