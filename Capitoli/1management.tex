@@ -1,30 +1,19 @@
-\section{Gestione della rete e protocollo SNMP}
+\section{Network Management, SNMP e NETCONF}
 
-\subsection{Introduzione alla gestione della rete (Network Management)}
-
-\subsubsection{Definizione e motivazioni}
-
-Una rete di calcolatori è un sistema intrinsecamente complesso, caratterizzato
-da migliaia di componenti hardware e software che interagiscono attraverso una
-struttura a livelli. Questa complessità, che aumenta esponenzialmente con il
-numero di interconnessioni tra i vari livelli e sistemi, rende la gestione
+Una rete di calcolatori è un sistema intrinsecamente complesso, con
+migliaia di componenti hardware e software che interagiscono attraverso una
+struttura a livelli. Questa complessità rende la gestione
 attiva della rete non solo un'esigenza tecnica ma un requisito strategico
 fondamentale per garantire l'efficienza, l'affidabilità e la qualità del
 servizio (QoS).
 
-La disciplina che si occupa di questa sfida è il \textbf{Network Management (NM)},
-formalmente definito come l'insieme di attività di deployment, integrazione e
-coordinamento degli elementi hardware, software e umani per monitorare, testare,
-interrogare, configurare, analizzare, valutare e controllare la rete e le sue
+Il \textbf{Network Management (NM)} è quindi l'insieme di attività di deployment, 
+integrazione e coordinamento degli elementi hardware, software e umani per monitorare, 
+testare, interrogare, configurare, analizzare, valutare e controllare la rete e le sue
 risorse. L'obiettivo finale è ottimizzare le prestazioni e la QoS a un costo
 ragionevole, considerando il costo totale che include non solo il traffico dati
-ma anche il consumo energetico e delle risorse.
-
-La complessità della gestione di una rete moderna è paragonabile a quella di
-altri sistemi critici su larga scala, come un aereo di linea o una centrale
-nucleare. Così come questi sistemi richiedono un monitoraggio e un controllo
-costanti per operare in sicurezza ed efficienza, anche una rete necessita di una
-supervisione continua per prevenire e risolvere problemi.
+ma anche il consumo energetico e delle risorse. Nel NM si vuole al più possibile
+limitare l'intervento umano, affidandosi a sistemi automatizzati e intelligenti.
 
 Le attività di gestione della rete sono molteplici e variegate. Includono, ad
 esempio:
@@ -53,11 +42,9 @@ di riferimento.
 
 \subsection{Il modello ISO per la gestione della rete: FCAPS}
 
-\subsubsection{Le cinque aree funzionali}
-
-Per organizzare in modo strutturato le complesse attività di network management,
-l'ISO ha sviluppato un modello di riferimento che suddivide il dominio in cinque
-aree funzionali. Queste aree, note con l'acronimo \textbf{FCAPS}, rappresentano
+L'ISO ha sviluppato un modello di riferimento che suddivide il dominio in cinque
+aree funzionali che in alcune caratteristiche possono sovrapporsi. Queste aree, 
+note con l'acronimo \textbf{FCAPS}, rappresentano
 le principali aree di interesse della gestione di rete e forniscono un framework
 concettuale per classificare compiti, strumenti e policy; sono Management di: 
 Fault, Configuration, Accounting, Performance, Security.
@@ -65,10 +52,8 @@ Fault, Configuration, Accounting, Performance, Security.
 \paragraph{Fault Management (gestione dei guasti)}
 
 L'obiettivo di quest'area è rilevare, registrare, isolare e rispondere alle
-condizioni di guasto nella rete. Sebbene la linea di demarcazione con il
-Performance Management sia a volte sottile, la gestione dei guasti si concentra
-sulla gestione mirata dei fallimenti transitori. È importante sottolineare che
-non si tratta solo di reagire a emergenze, ma anche di attuare strategie di
+condizioni di guasto nella rete.
+Non si tratta solo di reagire a emergenze, ma anche di attuare strategie di
 previsione per anticipare i problemi. La causa di un guasto può essere sia umana
 (esempio: un errore di un tecnico) sia legata a malfunzionamenti hardware o
 software.
@@ -76,11 +61,10 @@ software.
 \paragraph{Configuration Management (gestione della configurazione)}
 
 Quest'area si occupa di tracciare e gestire i dispositivi presenti in rete,
-incluse le loro configurazioni hardware e software. Mantenere un inventario
-aggiornato e garantire la coerenza delle configurazioni è cruciale per la
-stabilità della rete. In questo contesto, l'AI può fornire un supporto
-significativo, ad esempio aiutando a prendere decisioni complesse come la scelta
-ottimale di un server di backup in base a carichi e disponibilità.
+incluse le loro configurazioni hardware e software, per dare coerenza e
+stabilità alla rete. L'AI può fornire supporto, ad esempio aiutando a prendere decisioni complesse come la scelta
+ottimale di un server di backup in base a carichi e disponibilità, evitando anche 
+errori umani che potrebbero causare disservizi difficilmente rilevabili.
 
 \paragraph{Accounting Management (gestione degli account)}
 
@@ -109,35 +93,33 @@ alla rete.
 L'essenza del management può essere sintetizzata nel ciclo
 \textbf{Observe~$\to$~Analyze~$\to$~React}: si osserva lo stato della rete,
 si analizzano i dati raccolti per identificare problemi o trend, e infine si
-intraprendono azioni correttive (esempio: modificando una configurazione).
+intraprendono azioni correttive.
 La fase di osservazione diventa sempre più sofisticata, e l'AI gioca un ruolo
 crescente nell'implementare correttamente questo modello.
+SNMP si incentra principalmente su Observe e Analyze, mentre NETCONF è più 
+orientato a React.
 
-\subsection{Standard di gestione e architettura SNMP}
-
-\subsubsection{Contesto storico e componenti chiave}
+\subsection{Standard di gestione della rete: SNMP}
 
 Per gestire un sistema efficace in un ambiente eterogeneo, è indispensabile
-l'adozione di protocolli standard. Negli anni '80, l'approccio OSI con il suo
+l'adozione di protocolli standard. Inizialmente si era affermato l'approccio OSI
 CMIP (\textit{Common Management Information Protocol}) mirava a diventare lo
-standard unificato, ma il suo processo di standardizzazione fu troppo lento per
-le esigenze di mercato. In parallelo, l'approccio Internet diede vita a
-\textbf{SNMP} (\textit{Simple Network Management Protocol}), che partendo da
-una base più semplice ottenne una rapida adozione e divenne lo standard de facto.
+standard, ma il suo processo di standardizzazione fu troppo lento.
+Da una base inizialmente più semplice e rapida l'IETF standardizza \textbf{SNMP} 
+(\textit{Simple Network Management Protocol}), diventando lo standard.
 
-SNMP deriva dal precedente SGMP (\textit{Simple Gateway Monitoring Protocol}).
-La sua semplicità iniziale ne favorì la diffusione, ma con il tempo crebbe in
-dimensioni e complessità per rispondere a nuove esigenze. La versione attualmente
-più diffusa e completa è \textbf{SNMPv3}, che ha introdotto fondamentali
-miglioramenti in termini di sicurezza.
+SNMP deriva dal precedente SGMP (\textit{Simple Gateway Monitoring Protocol}) 
+per il monitoraggio dei router.
+La versione attualmente più diffusa e completa è \textbf{SNMPv3}, che ha 
+introdotto fondamentali miglioramenti in termini di sicurezza.
 
 L'architettura SNMP si basa su quattro componenti chiave:
 
 \begin{itemize}
 \item \textbf{Management Information Base (MIB)}: un archivio di informazioni
-distribuito che contiene i dati di gestione raccolti dai dispositivi di rete.
-Questi dati includono contatori (esempio: pacchetti inviati/ricevuti),
-informazioni di stato, versioni software e molto altro.
+distribuito che contiene i dati di gestione raccolti dai dispositivi di rete,
+come: contatori, pacchetti inviati/ricevuti, informazioni di stato, 
+versioni software e molto altro.
 \item \textbf{Structure of Management Information (SMI)}: un linguaggio di
 definizione dei dati (DDL) che stabilisce la sintassi e la semantica degli
 oggetti contenuti nella MIB, garantendo che le informazioni siano interpretate
@@ -170,21 +152,22 @@ In questo modello, i dati generati dagli agent vengono salvati in una struttura
 locale chiamata MIB. La managing entity può quindi accedere a questi database
 distribuiti inviando richieste SNMP agli agent per leggere o modificare i dati.
 
-\subsection{Analisi dei componenti fondamentali di SNMP}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{img/SNMP.png}
+\end{figure}
 
-\subsubsection{La struttura dei dati: SMI e MIB}
+\subsubsection{Analisi dei componenti fondamentali di SNMP}
 
 Per poter gestire una rete in modo efficace, è necessario definire in modo
 preciso e non ambiguo quali dati raccogliere e come rappresentarli. SNMP
 risolve questo problema attraverso due componenti strettamente correlati:
-lo SMI (\textit{Structure of Management Information}) e la MIB
-(\textit{Management Information Base}).
+lo SMI e la MIB.
 
 Lo SMI è un linguaggio di definizione dei dati il cui scopo è specificare la
-sintassi e la semantica delle informazioni di gestione. Invece di reinventare la
-ruota, SMI definisce un sottoinsieme di tipi di dati standard
-(esempio: INTEGER, OCTET STRING, Counter32) e due costrutti principali per
-organizzare le informazioni:
+sintassi e la semantica delle informazioni di gestione. SMI definisce un sottoinsieme 
+di tipi di dati standard (esempio: INTEGER, OCTET STRING, Counter32) e due costrutti 
+principali per organizzare le informazioni:
 
 \begin{itemize}
 \item \textbf{OBJECT-TYPE}: definisce un singolo oggetto gestito,
@@ -222,6 +205,11 @@ aggiornamento), ORGANIZATION (l'ente responsabile, in questo caso l'IETF),
 CONTACT-INFO e una DESCRIPTION che ne riassume lo scopo.
 \end{itemize}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{img/SMI.png}
+\end{figure}
+
 Un esempio pratico di MIB è il modulo UDP, che contiene oggetti utili per
 monitorare il protocollo. Oggetti come \texttt{UDPInDatagrams}
 (datagrammi totali ricevuti) e \texttt{UDPOutDatagrams} (datagrammi totali
@@ -232,11 +220,8 @@ sono fondamentali per diagnosticare problemi di connettività.
 
 \subsubsection{Il sistema di nomenclatura: l'albero OID}
 
-Data la vastità di dispositivi e protocolli esistenti, sorge un problema
-fondamentale: come assegnare un nome univoco a ogni possibile oggetto di
-gestione standardizzato, in modo che sia valido in qualsiasi parte del mondo?
-
-La soluzione adottata è l'\textbf{ISO Object Identifier (OID) Tree}, una
+Per assegnare un identificativo univoco standardizzato ad ogni oggetto 
+è stato sviluppato l'\textbf{ISO Object Identifier (OID) Tree}, una
 struttura gerarchica ad albero in cui ogni nodo ha sia un nome testuale che un
 numero identificativo. Partendo da una radice comune (gestita dall'ISO), è
 possibile navigare l'albero per raggiungere in modo univoco qualsiasi oggetto.
@@ -252,6 +237,11 @@ comuni (system, interfaces, ip, tcp, udp, ecc.). Esiste anche un ramo
 \texttt{private} utilizzato dai produttori per definire i propri oggetti
 specifici, garantendo l'estensibilità del sistema.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{img/tree.png}
+\end{figure}
+
 Analizziamo in dettaglio un oggetto fondamentale, \textbf{sysUpTime}:
 
 \begin{itemize}
@@ -266,18 +256,6 @@ trascorso dall'ultimo riavvio.
 \item \textbf{OID}: \texttt{.1.3.6.1.2.1.1.3 ::= \{ system 3 \}}, 
 che lo posiziona come terzo oggetto nel gruppo system.
 \end{itemize}
-
-Il gruppo \texttt{system} nel suo insieme fornisce informazioni di base
-essenziali su un dispositivo gestito, agendo come una sorta di ``targhetta
-digitale''. La prima interrogazione che un gestore di rete esegue su un nuovo
-dispositivo è tipicamente rivolta a questo gruppo. L'oggetto \textbf{sysDescr}
-fornisce una descrizione completa dell'hardware, del sistema operativo e del
-software di rete, permettendo di identificare immediatamente il tipo di
-apparato. \textbf{sysObjectID} definisce un identificatore univoco assegnato
-dal produttore, cruciale per l'identificazione automatizzata tramite script.
-\textbf{sysContact} e \textbf{sysLocation} forniscono il contesto
-amministrativo. Infine, \textbf{sysServices} riassume le funzionalità offerte
-dal nodo, offrendo una visione d'insieme delle sue capacità.
 
 \subsection{Il protocollo SNMP in azione}
 
@@ -363,8 +341,7 @@ sistema a chiave simmetrica condivisa tra manager e agente.
 \item \textbf{Autenticazione (Authentication)}: per garantire l'integrità del
 messaggio e l'autenticità del mittente, SNMPv3 calcola un
 \textit{Message Integrity Code} (MIC), utilizzando una funzione di hashing
-(come HMAC con SHA o MD5) applicata al messaggio insieme a una chiave segreta
-condivisa.
+applicata al messaggio insieme a una chiave segreta condivisa.
 \item \textbf{Protezione contro il replay (Playback Protection)}: per prevenire
 attacchi in cui un aggressore cattura un messaggio valido e lo reinvia in un
 secondo momento, SNMPv3 utilizza un meccanismo di \textit{nonce}. Questo
@@ -372,10 +349,10 @@ valore si basa su un contatore che riflette il tempo trascorso dall'ultimo
 riavvio del software di gestione, garantendo che ogni messaggio sia unico e
 impedendo che un messaggio obsoleto venga accettato come valido.
 \item \textbf{Controllo degli accessi (View-Based Access Control)}: SNMPv3
-permette di definire policy di accesso granulari. Un'entità SNMP può
-mantenere un database che specifica i diritti di accesso per utenti diversi,
-limitando non solo quali operazioni possono eseguire (lettura, scrittura) ma
-anche quali porzioni dell'albero MIB (viste) possono accedere.
+permette di definire policy con un database che specifica i diritti 
+di accesso per utenti diversi, limitando non solo quali operazioni possono 
+eseguire (lettura, scrittura) ma anche quali porzioni dell'albero MIB
+possono accedere.
 \end{itemize}
 
 L'architettura di SNMPv3 riflette questa modularità. Una PDU
@@ -414,15 +391,14 @@ proprio. Questa è la soluzione più efficiente e scalabile.
 \end{enumerate}
 
 La soluzione standard adottata nel mondo delle reti è \textbf{ASN.1}
-(\textit{Abstract Syntax Notation One}), uno standard ISO (X.680) che permette
+(\textit{Abstract Syntax Notation One}), uno standard ISO che permette
 di definire i tipi di dati e le strutture in modo indipendente dalla piattaforma.
 ASN.1 definisce la sintassi astratta, mentre le \textbf{BER}
 (\textit{Basic Encoding Rules}) specificano come gli oggetti definiti in ASN.1
 debbano essere codificati per la trasmissione.
 
-Le BER utilizzano una codifica \textbf{TLV} (\textit{Type, Length, Value}), un
-modo standard per formattare i dati in modo auto-identificante.
-Ogni dato trasmesso è composto da tre campi:
+Le BER utilizzano una codifica \textbf{TLV}, in cui ogni dato è rappresentato 
+da tre campi:
 \begin{itemize}
 \item \textbf{T (Type)}: un codice che caratterizza il tipo di dato
 (esempio: INTEGER, OCTET STRING).
@@ -470,11 +446,75 @@ garantendo la coerenza.
 \end{itemize}
 
 L'architettura di NETCONF è stratificata: i messaggi RPC, codificati in XML,
-vengono scambiati su un canale di trasporto sicuro e affidabile (come SSH, TLS,
-BEEP/TLS o SOAP/HTTP/TLS) per eseguire operazioni sulla configurazione del
+vengono scambiati su un canale di trasporto sicuro e affidabile (come TLS) 
+per eseguire operazioni sulla configurazione del
 dispositivo o per ricevere notifiche di eventi. Questo approccio basato su
 modelli dati espliciti e transazioni robuste rappresenta il futuro della gestione
 automatizzata e programmabile delle reti.
+
+Un'alternativa a NETCONF è RESTCONF, basata su API REST. Invece di
+invocare funzioni da remoto (come in RPC), utilizza le funzioni messe a
+disposizione dalle API. Inoltre, al posto di XML è possibile utilizzare
+YAML/JSON, che risultano più snelli e semplici.
+
+\subsection{Problemi aperti e direzioni future}
+
+\subsubsection{Problemi aperti}
+
+Sia NETCONF sia SNMP presentano due limiti principali:
+
+\begin{itemize}
+\item \textbf{Misure passive}: possono solo collezionare statistiche aggregate
+sullo stato dei dispositivi, senza alterare il traffico aggiungendo informazioni.
+Ad esempio, è possibile aggregare le statistiche per protocollo (TCP, UDP,
+\ldots) oppure per interfaccia.
+\item \textbf{Scala temporale}: lavorano su scale temporali dell'ordine del
+secondo o del minuto, troppo lente per alcuni fenomeni di rete.
+\end{itemize}
+
+È possibile cercare di rimediare a tali limiti utilizzando tre strumenti di
+misura attiva:
+
+\begin{itemize}
+\item \textbf{Ping}: permette di stimare lo stato dei dispositivi e la latenza.
+\item \textbf{Traceroute}: permette di tracciare il percorso di un protocollo
+nella rete, sfruttando il campo TTL.
+\item \textbf{NMAP}: permette di effettuare uno scan, ovvero scoprire quali
+porte del livello 4 sono attive in un host (quelle su cui c'è un processo in
+ascolto).
+\end{itemize}
+
+Nonostante si tratti di misure attive, le tre tecniche precedentemente elencate
+hanno una portata informativa limitata.
+
+\subsubsection{Direzioni future}
+
+Le tecniche passive sono basate sulla cattura e l'analisi del traffico. Gli
+strumenti più popolari per fare ciò sono tcp-dump e Wireshark. Tali strumenti
+non sono però dedicati ai controlli continui. Per farlo è infatti necessario il
+concetto di flusso (sequenza di pacchetti IP che condividono attributi comuni
+come indirizzo IP/porta mittente-destinatario, protocollo, numero di byte
+trasmessi, \ldots).
+
+Esistono due approcci:
+
+\begin{itemize}
+\item \textbf{NetFlow}: basato sull'esportazione di informazioni aggregate per
+il singolo flusso. I flussi possono essere TCP e UDP (nel caso UDP si usano
+indirizzi e porte mittente/destinatario per identificarli).
+\item \textbf{sFlow}: prevede un campionamento del flusso da inviare a una
+stazione di monitoraggio.
+\end{itemize}
+
+NetFlow e sFlow rappresentano misure passive. Per quanto riguarda invece le
+misure attive, esiste un nuovo framework chiamato \textbf{telemetria di rete},
+che prevede che i nodi giochino un ruolo attivo: mentre inviano traffico,
+aggiungono e rimuovono intestazioni. Si tratta di misure attive perché non si
+limitano a osservare il traffico, ma lo modificano attraverso l'aggiunta di
+intestazioni. Le modalità attive prevedono l'uso della CPU.
+
+SNMP resta comunque una valida soluzione per le misurazioni della banda:
+permette infatti di effettuare monitoraggi sul lungo periodo.
 
 \begin{figure}[ht]
     \centering
