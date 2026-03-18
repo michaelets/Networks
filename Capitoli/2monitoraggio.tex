@@ -78,16 +78,14 @@ report di antivirus.
 \end{itemize}
 
 Una caratteristica chiave dell'archive è che i suoi dati sono \textbf{immutabili}:
-una volta scritti, non vengono aggiornati.
-Questo lo rende l'ambiente ideale per eseguire analisi forensi e storiche,
-garantendo la coerenza e l'integrità delle evidenze.
+una volta scritti, non vengono aggiornati, garantendo la coerenza e l'integrità delle evidenze.
 Per ottimizzare lo spazio, per i dati più datati è spesso conveniente conservare
 solo i risultati post-elaborazione, anziché i dati grezzi completi.
 
 \paragraph{Annotation}
 
-I dati di annotazione sono informazioni supplementari utilizzate per arricchire
-e contestualizzare i dati presenti nell'archivio.
+I dati di annotazione sono informazioni supplementari che i sensori non sanno raccogliere, 
+utilizzate per arricchire e contestualizzare i dati presenti nell'archivio.
 Esempi comuni includono feed di threat intelligence, dati di geolocalizzazione,
 indicatori di reputazione degli IP e risoluzioni DNS.
 
@@ -151,9 +149,6 @@ archiviati in modo definitivo. Esempi di tali elaborazioni sono:
 Come regola di progettazione, l'elaborazione in tempo reale dovrebbe essere
 distinta da quella delle query. Il suo scopo è riassumere o pre-elaborare i dati
 per ridurre il carico sul sistema di query e fornire alert immediati.
-
-Questo framework completo dipende interamente dalla qualità e dalla copertura
-dei dati forniti dal suo componente di input prioritario: la rete di sensori.
 
 \subsection{La rete di sensori (Sensor Network)}
 
