@@ -157,8 +157,8 @@ passaggio dei dati in modo trasparente.
 messaggi per dedurre la natura della comunicazione.
 \end{itemize}
 
-Questi attacchi sono quasi impossibili da rilevare; l'unica difesa efficace è
-la prevenzione, tipicamente attraverso la cifratura.
+Questi attacchi sono quasi impossibili da rilevare poichè non alterano i dati;
+l'unica difesa efficace è  la prevenzione, tipicamente attraverso la cifratura.
 
 \subsubsection{Attacchi attivi}
 
@@ -176,6 +176,11 @@ dei messaggi verso un target specifico. La protezione assoluta è impraticabile;
 l'enfasi si sposta quindi sulla rilevazione e sul recupero.
 \end{itemize}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{img/attacks.png}
+\end{figure}
+
 \subsection{Servizi di sicurezza e protezione dei dati}
 
 I servizi di sicurezza implementano le politiche organizzative per garantire i
@@ -191,7 +196,7 @@ applicabile a livello di intero host, singola sessione o singolo messaggio.
 (protezione contro modifiche del singolo messaggio) e \textbf{connection-oriented},
 che garantisce che il flusso arrivi senza duplicazioni, riordini o inserimenti,
 coprendo anche la distruzione dei dati e il DoS.
-\item \textbf{Non-Repudiation}: impedisce la negazione di transazioni effettuate.
+\item \textbf{Non-Repudiation}: impedisce la negazione di trasmissione o ricevimento di un messaggio.
 \end{itemize}
 
 \subsection{Meccanismi tecnici e implementazioni}
@@ -209,8 +214,8 @@ dei peer.
 \item \textbf{Access Control}: meccanismi per l'applicazione dei diritti di
 accesso.
 \item \textbf{Traffic Padding}: inserimento di dati artificiali per contrastare
-l'analisi del traffico.
-\item \textbf{Controllo del routing}: selezione di percorsi sicuri e separati.
+l'analisi del traffico dell'attaccante.
+\item \textbf{Controllo del routing}: selezione di percorsi sicuri e separati per diverse richieste di sicurezza.
 \item \textbf{Notarizzazione}: garanzia di terze parti fidate sugli scambi.
 \end{itemize}
 

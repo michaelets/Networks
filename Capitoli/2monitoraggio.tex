@@ -9,8 +9,8 @@ la vera sfida risiede nell'interpretare ciò che viene raccolto, in particolare
 nel dominio della sicurezza informatica, dove le minacce reali rappresentano
 eventi statisticamente rari in un flusso di traffico altrimenti monotono.
 
-Poiché la stragrande maggioranza del traffico è benigna e gli attacchi più pericolosi
-sono rari e difficili da distinguere dal rumore di fondo, è necessario un framework
+Poiché la stragrande maggioranza del traffico è benigna, con attacchi comuni
+ma veri pericoli rari, è necessario un framework
 strutturato che integri raccolta, archiviazione e analisi in un sistema coeso.
 
 \subsection{Architettura generale di un framework di analisi di rete}
@@ -61,7 +61,7 @@ e sulle capacità di storage necessarie.
 si usano storage ad alte prestazioni per dati recenti, mentre quelli vecchi vengono spostati
 in supporti meno performanti a basso costo.
 \item \textbf{Aggiornamento delle Stime}: Con quale frequenza rivedere le stime di archiviazione? Il volume 
-del traffico di rete è in costante cresciata, necessitando un riesame periodico delle encessità di storage
+del traffico di rete è in costante crescita, necessitando un riesame periodico delle encessità di storage
 per evitare saturazioni.
 \end{enumerate}
 
@@ -79,8 +79,7 @@ report di antivirus.
 
 Una caratteristica chiave dell'archive è che i suoi dati sono \textbf{immutabili}:
 una volta scritti, non vengono aggiornati, garantendo la coerenza e l'integrità delle evidenze.
-Per ottimizzare lo spazio, per i dati più datati è spesso conveniente conservare
-solo i risultati post-elaborazione, anziché i dati grezzi completi.
+Per ottimizzare lo spazio si sfruttano risultati post-elaborazione, anziché i vecchi dati grezzi completi.
 
 \paragraph{Annotation}
 
@@ -105,7 +104,7 @@ Contiene dati pertinenti esclusivamente all'ambiente target, come:
 \begin{itemize}
 \item Inventari degli asset di rete e dei sistemi.
 \item Dati relativi al personale (es: ruoli, responsabilità).
-\item Calendari interni (es: di manutenzione).
+\item Calendari interni.
 \end{itemize}
 
 I dati della KB sono tipicamente non strutturati, di dimensioni relativamente ridotte,
@@ -126,7 +125,7 @@ non è la priorità principale.
 \paragraph{Query Processing}
 
 Il sistema di query processing è un ambiente che consente di sintetizzare
-i dati provenienti da molteplici fonti (archive, annotation, KB)
+i dati provenienti da molteplici fonti
 per fornire un contesto completo all'analisi.
 Permette agli analisti di correlare informazioni diverse per costruire
 un quadro d'insieme.
@@ -380,12 +379,15 @@ attivamente il traffico malevolo impedendogli di raggiungere la destinazione.
 Nel monitoraggio di rete vengono utilizzati diversi formati di dati, ciascuno
 con i propri punti di forza. I principali includono:
 \begin{itemize}
-\item Catture di pacchetti LIVE o OFFLINE (file PCAP): offrono il massimo
-livello di dettaglio.
-\item Dati pre-elaborati come NetFlow o sFlow: utili per dashboard e
-monitoraggio delle performance.
-\item Dati basati su flussi (NetFlow): forniscono un ottimo compromesso
-tra dettaglio e volume di dati.
+\item file PCAP: file di catture (ad esempio tshark, tcp-dump, \ldots) completi o
+incompleti (in caso di applicazioni di filtri). Si hanno informazioni pacchetto
+per pacchetto e a volte si ha anche il payload (se non cifrato);
+\item pre processed data: metriche o KPI (Key Performance Indication) ovvero
+metriche confrontante con valori di default (ad esempio PING$\sim$20 ms =
+true);
+\item log: di proxy, server web, \ldots Si utilizza un formato testuale;
+\item informazioni su base di flussi: informazioni compatte riguardanti una
+sessione;
 \end{itemize}
 
 \subsubsection{NetFlow}
@@ -495,36 +497,112 @@ integrando anche informazioni derivanti da deep packet inspection.
 
 \subsubsection{sFlow}
 
-sFlow (\textit{sampled Flow}) è uno standard industriale alternativo,
-originariamente sviluppato da InMon Corp, per l'esportazione di record a
-livello 2. A differenza di NetFlow, che analizza ogni pacchetto per costruire
-lo stato dei flussi, sFlow si basa su un \textbf{campionamento statistico}:
-esporta periodicamente pacchetti troncati insieme a contatori di interfaccia.
+sFlow (\textit{sampling Flow}) è un competitor di NetFlow. Non è basato
+sull'identificazione esplicita dei flussi, ma sul \textbf{campionamento}
+del traffico: l'obiettivo non è ricostruire completamente ogni flusso,
+bensì campionare in modo intelligente aggregati di traffico, lasciando al
+sistema di monitoraggio il compito di identificare eventuali flussi rilevanti.
 
-Il meccanismo operativo si basa negli switching/routing ASIC del dispositivo,
-che eseguono due funzioni in parallelo: raccolgono contatori di interfaccia
-e applicano un campionamento statistico ai pacchetti in transito.
-Questi due tipi di dati (\textit{Interface Counters} e \textit{Flow Samples})
-vengono inviati a un sFlow Agent, software in esecuzione sul dispositivo.
-L'agente li assembla in un unico sFlow Datagram e lo esporta via UDP a un
-Collector/Analyzer centrale. Il datagramma contiene quindi un mix di
-informazioni: header del pacchetto campionato, porte di input/output,
-dati VLAN, informazioni di routing e, se disponibili, persino dati
-applicativi come URL.
+sFlow esporta sia metadati sia intestazioni dei pacchetti campionati.
+Inoltre, a differenza di NetFlow, utilizza anche intestazioni di livello 2
+e contatori delle interfacce.
 
-I vantaggi principali di sFlow sono:
+Il principale vantaggio di sFlow rispetto a NetFlow è il minore costo
+computazionale, perché si limita a campionare ed esportare i dati, senza
+mantenere lo stato completo di ogni flusso. Il rovescio della medaglia è che
+una parte dell'informazione può andare persa.
+
+Dal punto di vista architetturale, sFlow prevede dispositivi exporter e
+dispositivi collector/analyzer. Una differenza chiave rispetto a NetFlow è
+che sFlow opera in tempo reale, catturando pacchetti e inviandoli subito,
+mentre NetFlow esporta i dati tipicamente alla chiusura del flusso.
+
+\subsubsection{Funzionamento di sFlow}
+
+Nel blocco di switching/routing ASIC, oltre alle normali operazioni di
+instradamento e inoltro, viene eseguito anche il campionamento.
+L'operazione può essere descritta in modo semplificato così:
+
 \begin{itemize}
-\item Basso costo di implementazione.
-\item Nessun impatto sulle performance di forwarding.
-\item Impatto minimo sulla rete.
-\item Elevata scalabilità.
-\item Misure quantitative affidabili a livello aggregato.
+\item Si inizializzano tre variabili: numero totale di pacchetti $N$, numero
+totale di campioni $n$ e rate di campionamento $R$ (un pacchetto ogni $R$).
+\item All'arrivo di ciascun pacchetto, il pacchetto può essere escluso oppure
+proseguire nel normale forwarding; il contatore totale $N$ viene aggiornato.
+\item Quando la condizione di campionamento è soddisfatta, il pacchetto viene
+campionato, $n$ viene incrementato e il rate viene reimpostato.
+\item Nel campionamento si rimuove il payload e si invia l'intestazione
+all'agent con metadati aggiuntivi; l'agent aggiunge poi i contatori di
+interfaccia e invia il datagramma sFlow (UDP) al collettore.
 \end{itemize}
 
-Il confronto con NetFlow evidenzia un chiaro trade-off: sFlow scala molto
-meglio in ambienti ad altissimo traffico e ha un impatto quasi nullo sulle
-performance del dispositivo, ma la sua natura campionata implica che può
-perdere dettagli importanti o non rilevare flussi di breve durata.
+Questa logica richiede, come NetFlow, dispositivi con circuiteria dedicata.
+Tramite sFlow è possibile osservare classi di traffico o insiemi di flussi,
+stimando il numero di pacchetti di interesse tramite il rapporto di
+campionamento:
+
+$$
+N_c \approx n_c \cdot \frac{N}{n}
+$$
+
+dove $n_c$ è il numero di pacchetti campionati appartenenti alla classe
+considerata.
+
+\subsubsection{Errore di campionamento}
+
+Stimare con precisione l'errore introdotto dal campionamento non è banale,
+perché gran parte dell'errore è legata ai microburst: sequenze molto dense di
+pacchetti dello stesso flusso, separate da intervalli temporali brevissimi
+(ordine dei microsecondi). Questi fenomeni possono risultare poco visibili con
+sFlow.
+
+In generale, sFlow è più affidabile su traffico regolare (ad esempio CBR,
+\textit{Constant Bit Rate}, come alcuni stream audio/video), mentre sul
+traffico impulsivo tipico dei meccanismi request/response può introdurre
+una sottostima delle dinamiche più brevi e intense.
+
+È possibile effettuare una stima probabilistica dell'errore causato dai
+microburst. Considerando $\mu$ come valore medio reale da stimare e
+
+$$
+\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i
+$$
+
+come sua stima campionaria, la varianza stimata è:
+
+$$
+s^2 = \frac{1}{n-1}\sum_{i=1}^{n}(x_i - \bar{x})^2
+$$
+
+Definendo quindi la statistica normalizzata:
+
+$$
+T = \frac{\bar{x} - \mu}{s/\sqrt{n}}
+$$
+
+dove $s/\sqrt{n}$ rappresenta l'errore standard, si può imporre un livello
+di confidenza, ad esempio:
+
+$$
+P\left(|T| < \alpha\right) = 0.95
+$$
+
+in cui $\alpha$ è il valore obiettivo determinato dal percentile scelto.
+
+\subsubsection{Pacchetti sFlow}
+
+L'sFlow Agent riceve pacchetti contenenti, tipicamente:
+
+\begin{itemize}
+\item intestazione del pacchetto originale;
+\item interfaccia mittente e destinataria;
+\item parametri di campionamento (ad esempio il rate);
+\item informazioni di forwarding (VLAN di ingresso/uscita, prossimo hop,
+maschera, \ldots);
+\item user ID;
+\item contatori di interfaccia I/O.
+\end{itemize}
+
+Tali informazioni vengono poi inviate al collettore per l'analisi.
 
 \subsubsection{Confronto e limiti dei metodi tradizionali}
 
@@ -548,6 +626,7 @@ dei metodi tradizionali, resa possibile dall'avvento dei data plane programmabil
 In reti grandi e veloci è fondamentale disporre di informazioni in tempo reale,
 granulari e con visibilità end-to-end, a volte persino a livello di singolo
 pacchetto, ad esempio per il debug di problemi complessi come il routing multipath.
+
 
 Il concetto fondamentale di INT è combinare l'inoltro dei pacchetti dati con
 la misurazione della rete. Questo avviene inserendo metadati relativi allo
@@ -654,6 +733,11 @@ e un'interfaccia di controllo (\texttt{prog.info}) che definisce come il
 control plane può interagire con il data plane (esempio: per inserire
 regole di routing).
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/p4.png}
+\end{figure}
+
 L'architettura di un dispositivo P4-programmabile segue tipicamente una
 pipeline di elaborazione dei pacchetti in cinque fasi:
 
@@ -712,3 +796,13 @@ sicuro e controllato. Permettono di eseguire compiti che altrimenti
 sarebbero bloccati dal Verifier, come ottenere il timestamp corrente o
 modificare il contenuto di un pacchetto.
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/2.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/22.png}
+\end{figure}
