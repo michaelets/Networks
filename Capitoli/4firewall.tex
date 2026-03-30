@@ -64,7 +64,7 @@ Per garantire l'applicazione rigorosa della politica di sicurezza, si utilizzano
 \end{enumerate}
 
 % ===========================================================
-\subsection{Limitazioni e Confronto tra Approcci: Rule-Based vs Policy-Based}
+\subsection{Limitazioni e Confronto tra Approcci: Rule vs Policy}
 % ===========================================================
 
 L'evoluzione delle minacce informatiche ha evidenziato la necessità di
@@ -87,11 +87,9 @@ o l'introduzione involontaria di malware tramite dispositivi infettati fisicamen
 
 Questi sistemi operano in modo statico: ogni azione deve essere espressamente configurata in 
 un file di configurazione per ogni pacchetto. Se non esiste una regola specifica, il sistema non può adattarsi.
+Offre in vantaggio una configurazione lineare e intuitiva.
 
-\begin{itemize}
-    \item \textbf{Vantaggi}: configurazione lineare e intuitiva.
-    \item \textbf{Esempio}: una regola che permette il traffico DNS esclusivamente verso un server esterno noto.
-\end{itemize}
+Esempio: \textit{regola che permette il traffico DNS esclusivamente verso un server esterno noto.}
 
 % -----------------------------------------------------------
 \subsubsection{Firewall Policy-Based (Basati su Politiche)}
@@ -183,7 +181,7 @@ I filtri di pacchetto sono vulnerabili ad attacchi come:
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{img/firewall.png}
+    \includegraphics[width=0.8\textwidth]{img/firewall.png}
 \end{figure}
 
 % -----------------------------------------------------------
@@ -257,11 +255,16 @@ interface}. In un'architettura di rete, i NIDS (Network IDS) vengono
 posizionati strategicamente in quattro punti:
 
 \begin{enumerate}
-    \item \textbf{Posizione 1 (Esterna)}: per rilevare tentativi di attacco diretti prima del firewall.
-    \item \textbf{Posizione 2 (DMZ)}: per monitorare il traffico verso i servizi esposti.
-    \item \textbf{Posizione 3 (Core Network)}: per proteggere i server critici e i dati sensibili.
-    \item \textbf{Posizione 4 (Workstation)}: per identificare minacce interne o traffico laterale tra client.
+    \item \textbf{1 (Esterna)}: per rilevare tentativi di attacco diretti prima del firewall.
+    \item \textbf{2 (DMZ)}: per monitorare il traffico verso i servizi esposti.
+    \item \textbf{3 (Core Network)}: per proteggere i server critici e i dati sensibili.
+    \item \textbf{4 (Workstation)}: per identificare minacce interne o traffico laterale tra client.
 \end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{img/IDS.png}
+\end{figure}
 
 % -----------------------------------------------------------
 \subsubsection{Approcci al Rilevamento}
@@ -354,7 +357,7 @@ Gli attacchi identificano vulnerabilità per creare macchine ``zombie'' tramite 
 \end{enumerate}
 
 % -----------------------------------------------------------
-\subsubsection{Architetture di Attacco}
+\subsubsection{Architetture di Attacco e Strategie di Difesa}
 % -----------------------------------------------------------
 
 \begin{itemize}
@@ -363,7 +366,7 @@ Gli attacchi identificano vulnerabilità per creare macchine ``zombie'' tramite 
 
     \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{img/directAttack.png}
+    \includegraphics[width=0.8\textwidth]{img/directAttack.png}
     \end{figure}
 
     \item \textbf{Reflector Attack}: gli agenti inviano richieste (spesso pacchetti SYN) 
@@ -372,14 +375,10 @@ Gli attacchi identificano vulnerabilità per creare macchine ``zombie'' tramite 
 
     \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{img/reflectorAttack.png}
+    \includegraphics[width=0.8\textwidth]{img/reflectorAttack.png}
     \end{figure}
 
 \end{itemize}
-
-% -----------------------------------------------------------
-\subsubsection{Strategie di Difesa}
-% -----------------------------------------------------------
 
 Le contromisure si articolano in tre fasi:
 
@@ -393,3 +392,8 @@ Le contromisure si articolano in tre fasi:
 In sintesi, solo un'integrazione coerente tra firewall, IDS e una
 filosofia \textbf{Zero Trust} può garantire una postura di sicurezza
 resiliente contro le minacce distribuite e sofisticate di oggi.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/4.png}
+\end{figure}
