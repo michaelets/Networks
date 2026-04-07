@@ -1,12 +1,5 @@
 \section{Reti Neurali Artificiali (ANN)}
 
-
-% ============================================================
-\subsection{Dal Biologico all'Artificiale}
-% ============================================================
-
-\subsubsection{What is a neural network}
-
 \paragraph{Componenti principali del neurone biologico}
 Per comprendere le ANN è indispensabile partire dalla loro ispirazione
 biologica. I componenti principali di un neurone sono:
@@ -16,7 +9,6 @@ biologica. I componenti principali di un neurone sono:
     \item \textbf{Assone (axon):} struttura lunga che trasmette i segnali e si divide in terminazioni.
 \end{itemize}
 
-\paragraph{How a neuron behaves}
 Il comportamento del neurone si articola in tre fasi:
 \begin{enumerate}
     \item \textbf{INPUT:} ricezione di impulsi elettrici dai dendriti provenienti da altri neuroni.
@@ -24,7 +16,12 @@ Il comportamento del neurone si articola in tre fasi:
     \item \textbf{OUTPUT:} se la somma supera una soglia, viene inviato un segnale lungo l'assone.
 \end{enumerate}
 
-\subsubsection{Artificial Neural Networks}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/neurone.png}
+\end{figure}
+
+\subsection{Artificial Neural Networks}
 
 \paragraph{Percettrone}
 In una ANN il \textbf{percettrone (Perceptron)} simula il neurone
@@ -41,6 +38,12 @@ I neuroni sono organizzati in tre tipi di livello:
     \item \textbf{Hidden Layer(s):} uno o più livelli nascosti intermedi.
     \item \textbf{Output Layer:} produce il risultato finale.
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{img/perceptron.png}
+\end{figure}
+
 Una ANN con un singolo neurone e nessun livello nascosto equivale a una semplice \textbf{regressione logistica}.
 
 \paragraph{Funzioni di attivazione comuni}
@@ -68,6 +71,11 @@ A = \sigma(Z)
 \]
 Il processo si ripete a cascata fino all'output stimato $\hat{Y}$.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{img/forwardPass.png}
+\end{figure}
+
 \paragraph{Funzione di costo}
 Per valutare la precisione si usa la \textbf{funzione di costo (Cost
 function)}, tipicamente la metà dell'errore quadratico medio:
@@ -91,6 +99,11 @@ parziali:
 \]
 Analogamente si calcolano i gradienti per i bias e per i pesi dei livelli precedenti.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{img/backwardPass.png}
+\end{figure}
+
 \subsubsection{Weights update -- Aggiornamento dei pesi}
 
 \paragraph{Discesa del gradiente}
@@ -107,6 +120,11 @@ gradiente è positivo ci si muove a sinistra; se negativo, a destra --
 puntando sempre verso il \textbf{minimo globale} dove il gradiente è
 zero.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/gradientDesc.png}
+\end{figure}
+
 % ============================================================
 \subsection{Deep Learning e Sizing}
 % ============================================================
@@ -119,6 +137,11 @@ livello nascosto tra input e output. Una \textbf{Deep Neural Network} è
 invece caratterizzata da molteplici livelli nascosti in cascata: la
 complessità delle connessioni aumenta drasticamente passando da uno a
 tre o più strati nascosti.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/complexityANN.png}
+\end{figure}
 
 \subsubsection{Complexity of ANNs}
 
@@ -165,16 +188,14 @@ performano decisamente meglio perché imparano matematicamente le
 feature intermedie che collegano i dati grezzi alla classificazione di
 alto livello finale.
 
-\paragraph{Overfitting e Regolarizzazione (Dropout)}
-
-\paragraph{Combatting overfitting in ANNs}
+\paragraph{Overfitting e Regolarizzazione}
 Aumentare il numero di neuroni introduce più parametri da apprendere,
 aumentando la probabilità di \textbf{overfitting}: reti troppo grandi
 tendono a \textit{memorizzare} l'input piuttosto che generalizzare. Per
 contrastarlo si adottano tecniche aggiuntive.
 
-\paragraph{Dropout}
-Il \textbf{Dropout} consiste nel disattivare (\textit{congelare})
+\begin{enumerate}
+    \item Il \textbf{Dropout} consiste nel disattivare (\textit{congelare})
 alcuni neuroni specifici degli hidden layer durante il training, con una
 certa probabilità. Questo meccanismo:
 \begin{itemize}
@@ -185,12 +206,12 @@ Durante la fase di \textbf{test}, tutti i neuroni sono attivi e gli
 output vengono opportunamente \textbf{scalati} per mantenere la
 coerenza con il comportamento in fase di addestramento.
 
-\paragraph{Early Stopping}
-L'\textbf{Early Stopping} prevede il monitoraggio delle prestazioni su
+    \item L'\textbf{Early Stopping} prevede il monitoraggio delle prestazioni su
 un set di validazione. Quando la loss di validazione inizia a
 peggiorare -- segno che la rete sta iniziando a sovra-adattarsi,
 apprendendo rumore piuttosto che pattern generali -- il training viene
 interrotto.
+\end{enumerate}
 
 % ============================================================
 \subsection{Applicazioni e Risultati KDD'99}

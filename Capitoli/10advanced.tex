@@ -1,6 +1,6 @@
 ﻿\section{Argomenti Avanzati in AIOps}
 
-\subsection{Panoramica e Data Augmentation}
+\subsection{Data Augmentation}
 
 In questa sezione del corso esploreremo una serie di tematiche
 avanzate cruciali per l'ambito AIOps. In primo luogo,
@@ -56,12 +56,10 @@ La procedura operativa suggerita in letteratura prevede due fasi
 distinte: in primo luogo, si utilizza un sottocampionamento
 casuale (random undersampling) per ridurre il numero di esempi
 della classe maggioritaria; successivamente, si impiega SMOTE
-per sovracampionare la classe minoritaria fino a bilanciare la
+per sovracampionare (oversampling) la classe minoritaria fino a bilanciare la
 distribuzione complessiva.
 
-\paragraph{Variante Borderline SMOTE}
-
-È? importante notare che la versione base di SMOTE seleziona le
+È importante notare che la versione base di SMOTE seleziona le
 istanze da sovracampionare in modo cieco. Per ovviare a questo,
 esiste la variante \textbf{Borderline SMOTE}, la quale si
 concentra esclusivamente su quelle istanze che vengono
@@ -84,8 +82,6 @@ ambigui nel caso in cui vi sia una forte sovrapposizione
 
 \subsubsection{Generative Adversarial Networks (GAN)}
 
-\paragraph{Introduzione alle GAN}
-
 Passando agli approcci a catena chiusa, le
 \textbf{Generative Adversarial Networks (GAN)} possono essere
 utilizzate per generare sinteticamente nuovi dati con molteplici
@@ -103,6 +99,11 @@ ha il compito di creare campioni sintetici falsi partendo da un
 vettore di input casuale. La seconda rete, il
 \textbf{Discriminatore}, ha l'obiettivo di distinguere i campioni
 reali da quelli sintetici generati.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/backpropagation.png}
+\end{figure}
 
 \paragraph{Addestramento e Funzione di Costo}
 
@@ -124,10 +125,6 @@ i dati, mentre il discriminatore cerca di massimizzarla:
 
 \subsection{Adversarial Machine Learning e Attacchi}
 
-\subsubsection{Concetti Base ed Esempi Avversari}
-
-\paragraph{Definizione e Rilevanza per la Sicurezza}
-
 Gli \textbf{Adversarial Examples (AE)} sono input per modelli
 di machine learning che un attaccante ha intenzionalmente
 progettato per indurre il modello a commettere un errore.
@@ -138,8 +135,6 @@ affrontato nel breve termine. Inoltre, risolvere il problema
 degli AE è sufficientemente difficile da richiedere un serio
 sforzo di ricerca.
 
-\paragraph{Esempi Visivi}
-
 Il principio di funzionamento è visibile nelle immagini
 dimostrative: aggiungendo una perturbazione impercettibile
 (rumore calcolato) all'immagine di un panda, il modello
@@ -148,6 +143,11 @@ confidenza al 99.3\%. Analogamente, nel mondo fisico
 l'applicazione di adesivi su un segnale di ``STOP'' può
 ingannare un sistema di visione artificiale, facendogli
 fallire il riconoscimento.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/AE.png}
+\end{figure}
 
 \subsubsection{Fast Gradient Sign Method (FGSM)}
 
@@ -173,6 +173,11 @@ generazione della perturbazione isolando il segno del gradiente
 per una magnitudine $\epsilon$ e infine l'applicazione della
 perturbazione all'input originale per creare l'esempio avversario.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/FGSM.png}
+\end{figure}
+
 \paragraph{Formulazione Matematica}
 
 Il metodo FGSM è uno dei più semplici e diffusi. Per un'istanza
@@ -197,6 +202,11 @@ FGSM ci si muove nella direzione del gradiente per massimizzare
 la perdita, spostando l'input verso una regione di
 classificazione errata.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/gradientLoss.png}
+\end{figure}
+
 \paragraph{Sfide Specifiche nelle Reti}
 
 Mentre l'utilizzo di questi approcci risulta piuttosto semplice
@@ -218,6 +228,11 @@ la vulnerabilità del modello standard. L'addestramento avversario
 (Adversarial training) riesce a mantenere l'accuratezza sopra il
 98\% anche sotto attacco.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/dataset.png}
+\end{figure}
+
 \paragraph{Vantaggi del Metodo}
 
 Il metodo FGSM presenta diversi vantaggi. In primo luogo, la sua
@@ -232,7 +247,7 @@ modello spesso riescono a ingannare anche altri modelli.
 
 Tra gli svantaggi, si segnala una robustezza limitata, in quanto
 gli esempi creati con FGSM potrebbero non resistere a
-trasformazioni diverse. È? inoltre affetto da vulnerabilità nota
+trasformazioni diverse. È inoltre affetto da vulnerabilità nota
 alle strategie di difesa, rendendo necessari metodi di
 addestramento avversario più sofisticati. Infine, trattandosi di
 un attacco white-box, richiede la conoscenza della rete neurale
@@ -275,7 +290,7 @@ approssimato.
 Un'estensione naturale è il \textbf{Projected Gradient Descent
 (PGD)}, che può essere visto come una versione iterativa di
 FGSM e rappresenta lo stato dell'arte per l'addestramento
-avversario. È? un approccio white-box che richiede il calcolo del
+avversario. È un approccio white-box che richiede il calcolo del
 gradiente o una sua approssimazione e non funziona con etichette
 rigide (hard labels). Al contrario, l'\textbf{Hop Skip Jump
 Attack (HSJA)} è un approccio black-box che funziona con hard
@@ -293,7 +308,7 @@ classificato correttamente e definiamo un budget di perturbazione
 $\epsilon$, tipicamente con norma $L_\infty$. La dimensione del
 passo $\alpha$ è solitamente impostata come frazione del budget
 (es. $\epsilon/T$). Si definisce inoltre la proiezione
-$P_{B(x_0, \epsilon)}$ sull'``palla'' attorno al punto $x_0$
+$\Pi_{B_{\epsilon}}(x_0)$ sulla ``bolla'' attorno al punto $x_0$
 realizzata tramite una funzione di clip che mantiene i valori
 entro l'intervallo $[x_0 - \epsilon, x_0 + \epsilon]$.
 
@@ -314,7 +329,7 @@ del gradiente (come in FGSM), ma proiettando immediatamente il
 risultato all'interno del vincolo di perturbazione definito.
 La formula di aggiornamento è:
 \[
-    x_{t+1} = \text{clip}_{x_0, \epsilon}
+    x_{t+1} = \Pi_{B_{\epsilon}}(x_0)
     \left( x_t + \alpha \cdot
     \text{sign}(\nabla_x J(\theta, x_t, y)) \right)
 \]
@@ -336,11 +351,11 @@ L'algoritmo HSJA lavora in modalità black-box con etichette
 rigide. La fase di inizializzazione mira a trovare un primo
 campione avversario $x_{adv}$ partendo da un campione pulito
 $x_0$. Il processo prevede lo spostamento in direzioni casuali
-(tramite un vettore $v$) entro un budget definito fino a quando
+(tramite un versore $u$) entro un budget definito fino a quando
 non si individua un punto in cui la classificazione del modello
 cambia rispetto a quella originale. Si ottiene così
-$x_{adv} = x_0 + d \cdot v$ tale che
-$f(x_{adv}) \neq f(x_0)$.
+$x^0_{adv} = x_0 + d \cdot v$ tale che
+$f(x^0_{adv}) = f(x_0 + \delta_0 $u$)\neq f(x_0)$.
 
 \paragraph{Fase di Hop}
 
@@ -381,6 +396,11 @@ trovare un campione avversario che sia il più vicino possibile
 al campione di riferimento pulito, raffinando progressivamente
 la perturbazione.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/hsja.png}
+\end{figure}
+
 \paragraph{Difficoltà di Difesa}
 
 Concludendo sugli esempi avversari, è importante sottolineare
@@ -397,8 +417,6 @@ a vulnerabilità.
 
 \subsubsection{Fondamenti e Ciclo di Apprendimento}
 
-\paragraph{Introduzione al Reinforcement Learning}
-
 Passiamo ora al \textbf{Reinforcement Learning (RL)}, una
 tecnica di machine learning che permette a un agente di
 apprendere in un ambiente interattivo per tentativi ed errori
@@ -406,9 +424,14 @@ apprendere in un ambiente interattivo per tentativi ed errori
 ed esperienze. L'RL utilizza ricompense e punizioni come segnali
 per rinforzare comportamenti positivi o negativi.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/rl.png}
+\end{figure}
+
 \paragraph{Elementi Principali}
 
-Il ciclo di apprendimento, come mostrato nello schema, coinvolge
+Il ciclo di apprendimento, coinvolge
 l'interazione continua tra Agente e Ambiente attraverso stati,
 azioni e ricompense. Gli elementi costitutivi sono: l'
 \textbf{Ambiente}, ovvero il mondo fisico in cui l'agente opera;

@@ -15,9 +15,12 @@ le \textbf{STAGIONALITÀ}, intese come ripetizioni periodiche;
 e i \textbf{CICLI}, ovvero pattern simili che si ripetono con
 periodicità variabile.
 
-\subsubsection{Identifying Descriptors in Time Series}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/forecasting.png}
+\end{figure}
 
-L'immagine associata a questa sezione mostra un grafico tipico
+L'immagine mostra un grafico tipico
 di una serie temporale, dove una linea continua (``data series'')
 oscilla vistosamente evidenziando una stagionalità, mentre una
 linea tratteggiata (``regression line'') attraversa il grafico
@@ -50,9 +53,10 @@ anomalie che si verificano per la prima volta
 (\textbf{first time anomaly}) o quando si dispone di un set di
 addestramento pulito.
 
-\subsection{Metodi Statistici e Goodness-of-Fit}
-
-\subsubsection{Suitable Only When Observable Trend Arise}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/anomaly.png}
+\end{figure}
 
 L'uso del forecasting è indicato solo quando emergono trend
 osservabili con fluttuazioni limitate. In questo contesto,
@@ -64,19 +68,21 @@ un picco improvviso nella linea rossa in corrispondenza di un
 evento anomalo, segnalando una discrepanza significativa tra
 previsione e realtà.
 
+\subsection{Metodi Statistici e Goodness-of-Fit}
+
 \subsubsection{Statistical Methods}
 
 Passando ai metodi statistici per il rilevamento delle anomalie,
 una tecnica comune prevede il confronto della media mobile con
 una soglia predefinita. Quando i dati vengono ridotti a un set
-normale standard, i punti che risiedono fuori dall'intervallo
+normale standard, i punti che risiedono nell'intervallo
 $[-2, 2]$ sono generalmente considerati accettabili.
 Un'alternativa più robusta è rappresentata dalla
 \textbf{deviazione assoluta mediana (MAD - Median Absolute
 Deviation)}. La MAD si calcola come la mediana delle deviazioni
 assolute dalla mediana della serie:
 \[
-    MAD = \text{median}(|X_i - \text{median}(X)|)
+    MAD = \text{median}(|x - \text{median}(x)|)
 \]
 Poiché la mediana è statisticamente meno suscettibile della media
 agli outlier, la MAD risulta essere una metrica particolarmente
@@ -109,8 +115,7 @@ l'applicabilità in contesti multi-dimensionali. Questo test si
 basa sulla funzione di densità di probabilità del $\chi^2$
 definita dalla formula che coinvolge i gradi di libertà ($k$),
 la variabile casuale e la funzione GAMMA. I valori della
-distribuzione $F(x, d)$ sono tabulati e disponibili in
-letteratura. Per applicare il test, è necessario definire un
+distribuzione $F(x, d)$ sono tabulati. Per applicare il test, è necessario definire un
 livello di significatività $\alpha$ per valutare il valore
 critico di confronto con il valore stimato, calcolato sommando
 le differenze quadratiche normalizzate tra i valori osservati
@@ -138,6 +143,11 @@ di outlier (guessing outlier ratio) per eliminare anomalie nei
 dati di addestramento. Un altro aspetto critico è che la
 dimensione temporale viene trascurata, sebbene il metodo possa
 funzionare applicando finestre temporali.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/elliptic.png}
+\end{figure}
 
 \subsubsection{Unsupervised Machine Learning (UL)}
 
@@ -176,6 +186,11 @@ su un ramo corto vicino alla radice, mentre un punto ``difficile
 da isolare'' (dato normale) richieda un percorso molto più lungo
 attraverso le ramificazioni dell'albero.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/isolationForest.png}
+\end{figure}
+
 \subsubsection{Additional Considerations}
 
 Il traffico normale, essendo più omogeneo, tende a concentrarsi
@@ -193,13 +208,10 @@ l'isolamento delle anomalie riducendo il rumore.
 \subsubsection{Costruzione e Punteggio di Anomalia}
 
 Il processo prevede il campionamento del dataset $X$ per ottenere
-un sottoinsieme $X_i$ con $\psi$ campioni, effettuato senza
+un sottoinsieme $X_i$ con $\phi$ campioni, effettuato senza
 reimmissione (without replacement). La dimensione raccomandata
-per $\psi$ varia tra 128 e 512 elementi. L'altezza massima
-dell'albero viene quindi impostata a $L = \log_2 \psi$.
-Per ogni sottoinsieme casuale, si costruisce un albero $T_i$
-selezionando casualmente sia la caratteristica di divisione
-(splitting feature) sia il punto di divisione.
+per $\phi$ varia tra 128 e 512 elementi. L'altezza massima
+dell'albero viene quindi impostata a $L = \log_2 \phi$.
 
 \subsubsection{Average Tree Length}
 
@@ -212,6 +224,9 @@ funzione:
 dove $H(n)$ è il numero armonico stimato come
 $\ln(n) + \gamma$ (costante di Eulero-Mascheroni). Questa formula
 serve come base per la normalizzazione del punteggio di anomalia.
+Per ogni sottoinsieme casuale, si costruisce un albero $T_i$
+selezionando casualmente sia la caratteristica di divisione
+(splitting feature) sia il punto di divisione.
 
 \subsubsection{Evaluate the Anomaly Score}
 
@@ -219,14 +234,14 @@ Data una foresta composta da $n$ alberi casuali, per ogni
 istanza $x$ nel set di test si valuta il numero di rami $h(x)$
 attraversati dalla radice al nodo foglia nell'i-esimo albero.
 Si calcola poi la media di questi valori su tutta la foresta,
-ottenendo $E[h(x)]$. Il punteggio di anomalia $s(x, \psi)$
+ottenendo $E[h(x)]$. Il punteggio di anomalia $s(x, \phi)$
 è definito come:
 \[
-    s(x, \psi) = 2^{-E[h(x)]/c(\psi)}
+    s(x, \phi) = 2^{-E[h(x)]/c(\phi)}
 \]
 L'interpretazione è la seguente: se la lunghezza media del
 percorso $E[h(x)]$ è significativamente inferiore al costo medio
-$c(\psi)$, allora $s$ tende a 1, indicando che $x$ è
+$c(\phi)$, allora $s$ tende a 1, indicando che $x$ è
 un'anomalia. Se i valori sono molto vicini, non c'è evidenza
 di anomalia (il punteggio tende a 0.5). Se la lunghezza del
 percorso è maggiore del costo medio, il punteggio sarà molto
@@ -255,7 +270,13 @@ categoria è il \textbf{Local Outlier Factor (LOF)}.
 Per ogni punto di test $A$, il LOF valuta la distanza di
 raggiungibilità (reachability distance) dal K-vicino $B$,
 definita come il massimo tra la distanza reale $d(A, B)$ e la
-K-distanza di $B$. Questa formulazione serve ad aumentare la
+K-distanza di $B$. 
+
+\begin{equation}
+    d_k(A,B) = \max\{d(A,B),\ k\text{-}dist(B)\}
+\end{equation}
+
+Questa formulazione serve ad aumentare la
 fluidità (smoothness) della misura. LOF valuta l'isolamento
 di un punto rispetto alla densità dell'area circostante.
 
@@ -264,12 +285,29 @@ locale (local reachability density) di $A$ rispetto ai suoi
 K-vicini. La LRD è calcolata come l'inverso della media delle
 distanze di raggiungibilità sui vicini. Infine, il fattore LOF
 si ottiene valutando il rapporto tra la LRD media dei vicini e
-la LRD del punto $A$ stesso. L'interpretazione del rapporto è:
+la LRD del punto $A$ stesso. 
+
+\begin{equation}
+    \mathrm{LRD}_k(A) = \left(\frac{1}{|N_k(A)|}
+    \sum_{B \in N_k(A)} d_k(A,B)\right)^{-1}
+\end{equation}
+
+\begin{equation}
+    \mathrm{LOF}_k(A) = \frac{1}{|N_k(A)|}
+    \sum_{B \in N_k(A)} \frac{\mathrm{LRD}_k(B)}{\mathrm{LRD}_k(A)}
+\end{equation}
+
+L'interpretazione del rapporto è:
 se il rapporto è minore o prossimo a 1, il punto $A$ ha una
 densità simile ai suoi vicini ed è un inlier. Se il rapporto è
 significativamente maggiore di 1 ($\gg 1$), significa che la
 densità locale di $A$ è molto inferiore a quella dei suoi
 vicini, identificandolo come un outlier.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/density.png}
+\end{figure}
 
 Le immagini a supporto mostrano graficamente il concetto: punti
 isolati hanno cerchi rossi più grandi che indicano punteggi
@@ -286,16 +324,14 @@ Per mitigare la sensibilità della scelta di $K$ è possibile
 utilizzare una strategia di ensemble calcolando il punteggio
 LOF con diversi valori di $K$. Generalmente, il valore minimo
 di $K$ deve essere impostato a 10, mentre il massimo dipende
-dai cluster dei dati. Tuttavia, questo metodo è generale ma
-presenta positivi. Sebbene rilevi sia anomalie locali che
-globali, solitamente sa bene per le prime più che per le
-seconde. Inoltre, il metodo ha difficoltà a rilevare i bordi
+dai cluster dei dati. Tuttavia, questo metodo è generale può 
+generare falsi positivi.
+Sebbene rilevi sia anomalie locali che
+globali, solitamente è utilizzato per le seconde. Inoltre, il metodo ha difficoltà a rilevare i bordi
 di cluster vicini e richiede che i dati siano numerici e
 varino continuamente.
 
 \subsection{Autoencoder e Deep Learning per Anomalie}
-
-\subsubsection{Autoencoder}
 
 Gli Autoencoder rappresentano un'importante applicazione delle
 reti neurali del Deep Learning. Trovano ampio utilizzo in diversi
@@ -313,6 +349,11 @@ modelli standard, motivo per cui viene classificato come modello
 non supervisionato. Il cuore dell'autoencoder è il livello
 nascosto (hidden layer).
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/autoencoders.png}
+\end{figure}
+
 \subsubsection{The Bottleneck Layer}
 
 Quando il numero di neuroni negli strati nascosti è inferiore a
@@ -320,7 +361,7 @@ quello dei livelli di input, si crea un ``collo di bottiglia''
 (bottleneck). Questa struttura forza i livelli nascosti a
 estrarre le informazioni rilevanti e i pattern più rilevanti dei
 dati ignorando il rumore. Pertanto, condizione necessaria in un
-modello AE è che i livelli nascosti abbiano meno dimensioni
+modello AE è che i livelli nascosti abbiano dimensioni minori
 rispetto ai livelli di input e output.
 
 \subsubsection{Encoding and Decoding}
@@ -346,7 +387,8 @@ esclusivamente traffico normale (inclusi gli outlier). In questo
 modo, il livello bottleneck apprenderà la rappresentazione
 latente dei soli dati normali. Anche se classificato come non
 supervisionato, non è problematico addestrarlo con traffico
-normale poiché ne abbiamo solitamente in abbondanza.
+normale poiché ne abbiamo solitamente in abbondanza, ma 
+va riaddestrato spesso per riallinearlo.
 
 \subsubsection{Reconstruction Error}
 
@@ -376,7 +418,15 @@ Si seleziona quindi un livello accettabile di falsi positivi per
 determinare automaticamente la soglia: i campioni con $MSE > T$
 saranno classificati come anomalie.
 
-\subsubsection{Evaluation Graphs}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/MSE.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/MSE2.png}
+\end{figure}
 
 I grafici presenti aiutano a visualizzare la scelta della soglia.
 Il primo grafico mostra la funzione di distribuzione cumulativa

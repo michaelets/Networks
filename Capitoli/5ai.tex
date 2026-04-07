@@ -29,16 +29,12 @@ della società:
     \item \textbf{Web Click Data}: i log generati dalle interazioni
     degli utenti con i servizi web, che forniscono tracce
     comportamentali del comportamento umano digitale.
-    \item \textbf{Medical Records (cartelle cliniche)}: l'accumulo di
-    dati sanitari digitalizzati permette analisi su vasta scala della
-    salute della popolazione.
     \item \textbf{Biologia}: in particolare nel campo della genomica,
     dove la quantità di informazioni sequenziate supera la capacità di
     analisi umana.
     \item \textbf{Ingegneria}: questo ambito include specificatamente le
     IT Operations e la manutenzione predittiva, dove i sensori e i log
     di sistema generano flussi continui di dati di stato.
-    \item \textbf{Finanza}: dove le transazioni ad alta frequenza richiedono monitoraggio istantaneo.
 \end{itemize}
 
 % ............................................................
@@ -58,43 +54,12 @@ un programmatore umano scrivere una serie finita di regole
 quindi lo strumento indispensabile per inferire logiche e pattern
 laddove la codifica manuale fallirebbe.
 
-% ............................................................
-\subsubsection{Ambiti Applicativi: dalla Medicina alla Robotica}
-% ............................................................
-
-L'ampiezza dell'impatto dell'AI attraversa l'intero arco di vita umana e
-diversi settori industriali. Una panoramica delle applicazioni mediche e
-tecnologiche comprende:
-
-\begin{itemize}
-    \item \textbf{Fase natale, pre-natale e neonatale}: l'AI viene
-    usata per la selezione degli embrioni nella fecondazione assistita e
-    per l'interpretazione del genoma dei neonati malati.
-    \item \textbf{Supporto quotidiano}: uso di assistenti vocali
-    (es. Alexa) che fungono da \textit{``medici coach''} intelligenti.
-    \item \textbf{Salute mentale e diagnosi acuta}: app per la salute
-    mentale e diagnosi estremamente rapide per attacchi cardiaci e
-    ictus.
-    \item \textbf{Diagnostica per immagini}: assistenza nella lettura di scansioni, vetrini e lesioni.
-    \item \textbf{Prevenzione e ottimizzazione}: uso dell'AI per
-    prevenire cecità o per pianificare trattamenti oncologici.
-    \item \textbf{Sicurezza del paziente e prognosi}: promozione della
-    sicurezza del paziente tramite sistemi predittivi.
-\end{itemize}
-
-Oltre al campo medico, si evidenziano due applicazioni critiche:
-
-\begin{enumerate}
-    \item \textbf{Navigazione Robotica}: capacità delle macchine di
-    muoversi e operare autonomamente in ambienti complessi.
-    \item \textbf{Identificazione Biometrica}: uso dell'AI per il
-    riconoscimento facciale e l'identificazione della voce e delle
-    impronte digitali.
-\end{enumerate}
-
 % ------------------------------------------------------------
 \subsection{Definizione e Scopo dell'AIOps}
 % ------------------------------------------------------------
+
+L'ampiezza dell'impatto dell'AI attraversa l'intero arco di vita umana e
+diversi settori industriali.
 
 L'acronimo \textbf{AIOps} (\textit{Artificial Intelligence for IT
 Operations}) definisce l'applicazione delle tecniche di intelligenza
@@ -155,9 +120,9 @@ processare Big Data per fornire un flusso ininterrotto di insight che
 abilitano un processo decisionale automatizzato e proattivo, superando i
 limiti della gestione IT manuale reattiva.
 
-% ============================================================
-\subsection{Fondamenti di Machine Learning per AIOps}
-% ============================================================
+% ------------------------------------------------------------
+\subsection{ML for AIOps: Tipologie di Problemi e Apprendimento}
+% ------------------------------------------------------------
 
 Questo capitolo esplora i paradigmi fondamentali dell'apprendimento
 automatico (Machine Learning), che costituiscono il motore analitico
@@ -165,10 +130,6 @@ dell'AIOps. Attraverso l'analisi delle diverse tipologie di
 apprendimento e delle sfide teoriche intrinseche alla generalizzazione
 dei dati, verranno definiti i meccanismi attraverso i quali i sistemi
 intelligenti possono estrarre valore operativo dai dataset IT.
-
-% ------------------------------------------------------------
-\subsection{Tipologie di Problemi e Apprendimento}
-% ------------------------------------------------------------
 
 Nel contesto dell'intelligenza artificiale applicata alle operazioni IT,
 gli algoritmi non sono monolitici, ma si differenziano in base alla
@@ -178,7 +139,7 @@ l'apprendimento supervisionato e l'apprendimento non supervisionato,
 ciascuna con specifiche applicazioni e metodologie di funzionamento.
 
 % ............................................................
-\paragraph{Apprendimento Supervisionato (Supervised Learning)}
+\subsubsection{Apprendimento Supervisionato (Supervised Learning)}
 % ............................................................
 
 L'apprendimento supervisionato rappresenta l'approccio più tradizionale
@@ -197,7 +158,7 @@ Le possibili applicazioni di questo approccio si dividono in due classi principa
     \item \textbf{Regressione}: quando l'output è un valore continuo (es. predire il tempo di latenza in millisecondi).
 \end{enumerate}
 
-\paragraph{Decisione con 1 caratteristica (feature).}
+\paragraph{Decisione con 1 feature}
 In questo caso semplificato, l'unica variabile considerata è il numero
 di flussi (\texttt{\#flows}). I valori sono binari: 0 e 1. Se il numero
 di flussi è basso (0), il traffico è etichettato come
@@ -206,7 +167,12 @@ di flussi è basso (0), il traffico è etichettato come
 (\textit{New Sample}) viene mappato sulla linea e, cadendo nella zona
 dello 0, viene classificato come benigno.
 
-\paragraph{Decisione con 2 caratteristiche.}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/supervised1.png}
+\end{figure}
+
+\paragraph{Decisione con 2 feature.}
 Lo scenario diventa più realistico introducendo una seconda dimensione.
 La figura mostra un piano cartesiano bidimensionale dove l'asse delle
 ascisse rappresenta il numero di flussi (\texttt{\#flows}) e l'asse
@@ -221,8 +187,13 @@ due aree distinte. Quando viene introdotto un nuovo campione, la sua
 posizione nel piano porterà il sistema a classificarlo come maligno se
 cade oltre il confine.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/supervised2.png}
+\end{figure}
+
 % ............................................................
-\paragraph{Apprendimento non Supervisionato (Unsupervised Learning)}
+\subsubsection{Apprendimento non Supervisionato (Unsupervised Learning)}
 % ............................................................
 
 A differenza dell'apprendimento supervisionato, l'apprendimento non
@@ -242,7 +213,14 @@ Gli obiettivi principali in questo paradigma includono:
     probabilistica delle regioni in cui si distribuiscono i dati.
 \end{itemize}
 
-\paragraph{Clustering.}
+\paragraph{Density Estimation}
+Una distribuzione di punti sull'asse $X$ viene approssimata da una
+funzione $f(x)$ che modella la densità di probabilità per ogni area
+dello spazio. Graficamente, la curva si alza in corrispondenza delle
+concentrazioni di punti e si abbassa dove i dati sono scarsi,
+permettendo di modellare la probabilità che un dato evento si verifichi.
+
+\paragraph{Clustering}
 La figura mostra un piano cartesiano con due assi (\textit{Feature A} e
 \textit{Feature B}). I dati sono visibilmente separati in due gruppi
 distinti. L'algoritmo, pur non sapendo cosa rappresentino quei punti, è
@@ -250,20 +228,18 @@ in grado di circondare questi gruppi (\textit{cluster}) identificando
 che essi rappresentano comportamenti simili senza avere modelli
 predefiniti.
 
-\paragraph{Stima della Densità (Density Estimation).}
-Una distribuzione di punti sull'asse $X$ viene approssimata da una
-funzione $f(x)$ che modella la densità di probabilità per ogni area
-dello spazio. Graficamente, la curva si alza in corrispondenza delle
-concentrazioni di punti e si abbassa dove i dati sono scarsi,
-permettendo di modellare la probabilità che un dato evento si verifichi.
-
-\paragraph{Embedding.}
+\paragraph{Embedding}
 I punti disposti lungo una forma curva a \textit{``ferro di cavallo''}
 nel piano vengono modellati da una linea che ne segue la distribuzione.
 Questo rappresenta il concetto di scoprire un \textit{manifold} a bassa
 dimensione (una linea unidimensionale) vicino alla quale vivono i dati,
 permettendo di semplificare la complessità dimensionale del dataset
 originale.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{img/unsupervised.png}
+\end{figure}
 
 % ------------------------------------------------------------
 \subsubsection{La Sfida dell'Apprendimento (Learning Theory)}
@@ -283,6 +259,11 @@ di addestramento, il sistema deve derivare una relazione (o funzione)
 valida per un dominio infinito. In termini matematici e logici, esiste
 un numero infinito di possibili relazioni che possono spiegare o passare
 attraverso un set finito di punti.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/learning.png}
+\end{figure}
 
 La figura illustrativa mostra un grafico cartesiano con una serie di
 punti neri (i dati di addestramento) disposti con andamento

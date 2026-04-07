@@ -19,9 +19,9 @@ sono una scelta comune per gli scenari di rete.
 
 Per quanto riguarda la rappresentazione formale, gli alberi
 di decisione classificano le istanze ordinandole lungo la
-struttura dell'albero, partendo dal \textbf{nodo radice}
-(\textit{Root Node}) fino a raggiungere un
-\textbf{nodo foglia} (\textit{Leaf Node}). In questa
+struttura dell'albero, partendo dal
+\textit{Root Node} fino a raggiungere un
+\textit{Leaf Node}. In questa
 architettura, ogni nodo specifica un test su un determinato
 attributo dell'istanza in esame. Ogni ramo discendente da
 un nodo corrisponde a uno dei possibili valori per
@@ -29,11 +29,11 @@ l'attributo testato. Il processo termina quando si raggiunge
 una foglia, la quale fornisce la classificazione finale.
 
 % ............................................................
-\subsubsection{Esempio di Training Set e Struttura}
+\paragraph{Esempio di Training Set e Struttura}
 % ............................................................
 
-Per comprendere meglio il funzionamento, si consideri un
-training set composto da eventi di rete (da E1 a E13)
+Considerato un
+training set composto da eventi di rete (E1 a E13)
 caratterizzati da attributi quali:
 
 \begin{itemize}
@@ -57,6 +57,11 @@ il percorso prosegue verso nodi interni che testano altri
 attributi (Dest Port, Dest IP). In sintesi, ogni nodo
 interno testa un attributo $X_i$, mentre ogni ramo seleziona
 uno specifico valore per $X_i$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/decisionTree.png}
+\end{figure}
 
 % ------------------------------------------------------------
 \subsection{Caratteristiche del Modello e Algoritmo
@@ -125,6 +130,11 @@ mescolanza eterogenea di classi, mentre un gruppo con
 \textit{impurità minima} contiene prevalentemente elementi
 di una sola classe.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/impurity.png}
+\end{figure}
+
 Definiamo $i(N)$ come l'impurità di un nodo $N$:
 \begin{itemize}
     \item $i(N) = 0$ se tutti i pattern appartengono alla
@@ -137,7 +147,7 @@ La misura più popolare è l'\textbf{entropia}
 (\textit{Entropy Impurity}):
 
 \begin{equation}
-    i(N) = -\sum_{j=1}^{H} P(w_j) \log_2 P(w_j)
+    i(N) = -\sum_{j=1}^{n} P(w_j) \log_2 P(w_j)
 \end{equation}
 
 dove $P(w_j)$ è la frazione di pattern al nodo $N$ che
@@ -181,9 +191,19 @@ di $S$ per cui l'attributo $A$ ha valore $v$, e $i(S_v)$
 all'entropia originale la somma ponderata delle entropie
 dei sottoinsiemi creati dalla divisione.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\textwidth]{img/infoGain.png}
+\end{figure}
+
 % ------------------------------------------------------------
 \subsection{Esempio Pratico di Calcolo}
 % ------------------------------------------------------------
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/training1.png}
+\end{figure}
 
 Il set completo include 14 eventi (E1--E14). Rappresentiamo
 con la notazione $E[X+,\, Y-]$ il fatto che vi siano $X$
@@ -210,11 +230,18 @@ Divide i dati in tre sottoinsiemi:
 TCP $(2+, 3-)$, ICMP $(4+, 0-)$, UDP $(3+, 2-)$.
 
 \begin{equation}
-    0.94 -
-    \left[\frac{5}{14}\cdot 0.971
-    + \frac{4}{14}\cdot 0.0
-    + \frac{5}{14}\cdot 0.971\right]
-    = 0.246
+    \begin{aligned}
+        \mathrm{Gain}(S,\,\text{Protocol})
+        &= i(S) - \left[\frac{5}{14}\,i(\text{Protocol}=\text{TCP})
+        + \frac{4}{14}\,i(\text{Protocol}=\text{ICMP})
+        + \frac{5}{14}\,i(\text{Protocol}=\text{UDP})\right] \\
+        &= E([9+,5-]) - \left[\frac{5}{14}E([2+,3-])
+        + \frac{4}{14}E([4+,0-])
+        + \frac{5}{14}E([3+,2-])\right] \\
+        &= 0.94 - \left[\frac{5}{14}\cdot 0.971
+        + \frac{4}{14}\cdot 0.0
+        + \frac{5}{14}\cdot 0.971\right] = 0.246
+    \end{aligned}
 \end{equation}
 
 \paragraph{Attributo Data Size.}
@@ -225,7 +252,7 @@ Divide i dati in Large, Med, Low:
     \left[\frac{4}{14}\cdot 1
     + \frac{6}{14}\cdot 0.918
     + \frac{4}{14}\cdot 0.811\right]
-    = 0.023
+    = 0.029
 \end{equation}
 
 \paragraph{Attributo Dest Port.}
@@ -235,7 +262,7 @@ i casi ``Well-Known'' da quelli ``Other''.
 \paragraph{Attributo Dest IP.}
 $Gain = 0.048$.
 
-Confrontando i risultati $(0.246,\ 0.023,\ 0.1515,\ 0.048)$,
+Confrontando i risultati $(0.246,\ 0.029,\ 0.1515,\ 0.048)$,
 si conclude che \textbf{Protocol è il vincitore} in quanto
 offre il maggiore guadagno di informazione. L'albero inizia
 quindi con il nodo radice ``Protocol''. I rami si dividono
@@ -264,7 +291,9 @@ Si ricalcola il guadagno per gli attributi rimanenti:
     Gain(\text{Protocol=UDP},\ \text{Dest Port})
         &= 0.02 \\
     Gain(\text{Protocol=UDP},\ \text{Dest IP})
-        &= 0.971
+        &= 0.971 \\
+    Gain(\text{Protocol=UDP},\ \text{Data Size})
+        &= 0.02 
 \end{align*}
 Il valore molto alto per Dest IP suggerisce che questo
 sarà il prossimo nodo discriminante per il ramo UDP.
@@ -274,7 +303,8 @@ Si determina quale attributo selezionare per il
 sottoinsieme $S_{TCP} = \{E1, E2, E8, E9, E11\}$:
 \begin{align*}
     Gain(\text{TCP},\ \text{Dest Port}) &= 0.97 \\
-    Gain(\text{TCP},\ \text{Data Size}) &= 0.57
+    Gain(\text{TCP},\ \text{Data Size}) &= 0.57 \\
+    Gain(\text{TCP},\ \text{Dest IP}) &= 0.019
 \end{align*}
 Dest Port risulta il nodo discriminante per il ramo TCP.
 
@@ -413,6 +443,11 @@ alla soglia di 30. Di conseguenza, la divisione viene
 annullata e i nodi vengono accorpati, terminando la
 crescita in quel punto.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{img/minLeaf.png}
+\end{figure}
+
 % ............................................................
 \subsubsection{Quando Usare il Pre-Pruning?}
 % ............................................................
@@ -498,17 +533,21 @@ scambiare complessità per accuratezza nell'albero $T$.
 L'obiettivo è minimizzare la seguente funzione di costo:
 
 \begin{equation}
-    \min Cost = |T| + \alpha \, R(T)
+    \min Cost = \min \{ |T| + \alpha \, R(T) \}
 \end{equation}
 
 dove:
 \begin{itemize}
     \item $|T|$ è la dimensione dell'albero, ovvero il
         numero di foglie ($N_{\text{leaves}}$).
-    \item $R(T)$ indica gli errori di classificazione
-        alle foglie, calcolato sommando su tutte le
-        foglie $L$ il prodotto dell'impurezza $i(L)$
-        per la proporzione di campioni in quella foglia.
+    \item $R(T)$ indica gli errori di classificazione alle
+        foglie, e si può scrivere come:
+        \begin{equation}
+            R(T) = \frac{1}{N}\sum_{L \in \text{leaves}} I(L)\, n_L
+        \end{equation}
+        calcolato sommando su tutte le
+    foglie L il prodotto dell'impurezza I(L) per la proporzione di campioni 
+    in quella foglia $n_L$.
     \item $\alpha$ è il parametro di complessità, che
         determina il fattore di influenza tra complessità
         e performance.
@@ -554,7 +593,6 @@ Tramite iper-parametri &
 Basato su validazione \\
 \bottomrule
 \end{tabular}
-\caption{Confronto tra Pre-Pruning e Post-Pruning}
 \end{table}
 
 Il post-pruning offre una migliore generalizzazione
@@ -648,3 +686,48 @@ Esistono tuttavia debolezze intrinseche
         agli assi che potrebbero non corrispondere
         alla distribuzione reale dei dati.
 \end{itemize}
+
+% ------------------------------------------------------------
+\subsection{Trade-off Bias-Varianza}
+% ------------------------------------------------------------
+
+Per comprendere a fondo le prestazioni dei modelli di
+machine learning, è necessario introdurre il compromesso
+tra \textbf{bias} (distorsione) e \textbf{varianza}.
+L'errore di bias è l'errore dovuto alle assunzioni
+semplificative fatte dal modello per rendere la funzione
+target più facile da apprendere. Modelli come KNN hanno
+basso bias, mentre la regressione logistica e lineare
+hanno alto bias.
+
+L'errore di varianza rappresenta quanto la stima della
+funzione target cambierebbe se venissero forniti dati di
+addestramento diversi. Il KNN ha alta varianza, mentre
+la regressione lineare e logistica ne hanno poca. Il
+trade-off consiste nell'impostare gli iper-parametri
+dell'algoritmo per bilanciare questi due aspetti. Nel
+KNN, ad esempio, aumentare $K$ riduce la varianza ma
+aumenta il bias.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\textwidth]{img/biasVariance.png}
+\end{figure}
+
+% ............................................................
+\subsubsection{Bias-Varianza negli Alberi di Decisione}
+% ............................................................
+
+Applicando questi concetti agli alberi di decisione,
+possiamo affermare che i DT hanno \textbf{basso bias}
+poiché non fanno assunzioni sulla funzione di target.
+D'altra parte, i DT presentano \textbf{alta varianza}:
+l'algoritmo divide i dati ripetutamente seguendo un solo
+percorso, di conseguenza le predizioni si basano su un
+numero sempre minore di punti dati.
+
+L'impatto del pruning sulla varianza è positivo: un
+albero potato si affida meno a pochi punti dati,
+generalizza meglio e quindi ha meno varianza rispetto
+a un albero profondo.
+

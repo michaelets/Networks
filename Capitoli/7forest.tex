@@ -1,45 +1,6 @@
 \section{Random Forest e Dataset KDD'99}
 
 % ------------------------------------------------------------
-\subsection{Trade-off Bias-Varianza}
-% ------------------------------------------------------------
-
-Per comprendere a fondo le prestazioni dei modelli di
-machine learning, è necessario introdurre il compromesso
-tra \textbf{bias} (distorsione) e \textbf{varianza}.
-L'errore di bias è l'errore dovuto alle assunzioni
-semplificative fatte dal modello per rendere la funzione
-target più facile da apprendere. Modelli come KNN hanno
-basso bias, mentre la regressione logistica e lineare
-hanno alto bias.
-
-L'errore di varianza rappresenta quanto la stima della
-funzione target cambierebbe se venissero forniti dati di
-addestramento diversi. Il KNN ha alta varianza, mentre
-la regressione lineare e logistica ne hanno poca. Il
-trade-off consiste nell'impostare gli iper-parametri
-dell'algoritmo per bilanciare questi due aspetti. Nel
-KNN, ad esempio, aumentare $K$ riduce la varianza ma
-aumenta il bias.
-
-% ............................................................
-\subsubsection{Bias-Varianza negli Alberi di Decisione}
-% ............................................................
-
-Applicando questi concetti agli alberi di decisione,
-possiamo affermare che i DT hanno \textbf{basso bias}
-poiché non fanno assunzioni sulla funzione di target.
-D'altra parte, i DT presentano \textbf{alta varianza}:
-l'algoritmo divide i dati ripetutamente seguendo un solo
-percorso, di conseguenza le predizioni si basano su un
-numero sempre minore di punti dati.
-
-L'impatto del pruning sulla varianza è positivo: un
-albero potato si affida meno a pochi punti dati,
-generalizza meglio e quindi ha meno varianza rispetto
-a un albero profondo.
-
-% ------------------------------------------------------------
 \subsection{Random Forest: Concetti e Algoritmo}
 % ------------------------------------------------------------
 
@@ -86,7 +47,8 @@ di un singolo albero.
 \subsubsection{Bagging e Randomizzazione delle Feature}
 % ............................................................
 
-L'algoritmo Random Forest combina due metodi principali:
+L'algoritmo Random Forest combina due metodi principali per 
+risolvere overfitting e instabiilità:
 
 \begin{itemize}
     \item \textbf{Bagging (Bootstrap Aggregation)}:
@@ -94,8 +56,8 @@ L'algoritmo Random Forest combina due metodi principali:
         Riduce la varianza dei campioni, pur introducendo
         discenti deboli (\textit{weak learners}); il bias
         introdotto viene poi ridotto tramite l'ensembling.
-        La probabilità che un campione \textit{non} venga
-        selezionato in un dato bootstrap è
+        La probabilità che un campione sia in ds originale e
+        non nel bootstrappato è
         $\approx 1/e \approx 0.37$ (37\%).
     \item \textbf{Selezione casuale delle feature}:
         rimuove la correlazione tra gli alberi. Ad ogni
@@ -104,6 +66,16 @@ L'algoritmo Random Forest combina due metodi principali:
         di $P$ attributi, permettendo di selezionare
         anche attributi non dominanti.
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/randomForest.png}
+\end{figure}
+
+Dai dati originali si creano diversi campioni tramite Bootstrapping
+(Campionamento con Rimpiazzo). Ogni capione addestra un 
+Classificatore separato. Infine i risultati vengono aggregati per 
+formare il \textbf{Classificatore Ensenble}
 
 La motivazione matematica della feature randomization
 si basa sulla varianza di una combinazione di alberi.
@@ -121,7 +93,15 @@ randomizzazione delle feature, si ottiene
 $Var(f) \to 0$, ovvero la varianza dell'ensemble
 tende a zero.
 
-QUI DEVI SISTEMARE LA SPIEGAZIONE!!!!!!!!!!-------------------
+Se le caratteristiche disponibili al punto di divisione sono p=4, l'
+algoritmo selezona casualmente m = $\sqrt{P} = 2$ candidati per la divisione.
+Questo assicura che ogni albero si concentri su aspetti diversi dei dati, 
+evitando di usare sempre le stesse caratteristiche dominnanti e decorrelando
+così gli alberi.
+
+Selezionando la carateristica per la divisione tra quelle randomizzate,
+si riduce l'influenza delle caretteristiche dominanti.
+
 
 % ------------------------------------------------------------
 \subsection{Il Dataset KDD'99: Struttura e
@@ -239,7 +219,7 @@ $6.0$ ms \\
 \end{table}
 
 % ............................................................
-\subsubsection{Classificazione a Due Stadi (Gerarchica)}
+\subsubsection{Alternativa: Classificazione a Due Stadi (Gerarchica)}
 % ............................................................
 
 Considerando le limitazioni degli approcci a singolo
